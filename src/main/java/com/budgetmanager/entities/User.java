@@ -1,6 +1,10 @@
 package com.budgetmanager.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -13,7 +17,34 @@ public class User {
     private String login;
     @Column(name = "password")
     private String password;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    @JsonBackReference
+    UserRole userRoleId;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private Set<UserRole> allRoles = new HashSet<>();
+
+    public UserRole getUserRoleId() {
+        return userRoleId;
+    }
+
+    public Set<UserRole> getAllRoles() {
+        return allRoles;
+    }
+
+    public void setAllRoles(Set<UserRole> allRoles) {
+        this.allRoles = allRoles;
+    }
+
+    public void setUserRoleId(UserRole userId) {
+        this.userRoleId = userId;
+    }
 
     public Long getId() {
         return id;
