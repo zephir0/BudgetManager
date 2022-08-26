@@ -1,2 +1,9 @@
 server:
   port: 8089
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/BudgetManager
+    username: root
+    password: xx33xx12
+  jpa:
+    show-sql: true

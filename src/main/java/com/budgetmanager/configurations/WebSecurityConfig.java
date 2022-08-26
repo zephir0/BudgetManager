@@ -2,6 +2,7 @@ package com.budgetmanager.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -16,23 +17,19 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain configuration(HttpSecurity http) throws Exception {
-        return http.authorizeRequests()
-                .mvcMatchers("/register", "/login")
-                .permitAll()
-                .antMatchers("/*.css", "static/**")
+        return http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/auth/api/**")
                 .permitAll()
                 .anyRequest()
-                .authenticated()
-                .and()
-                .formLogin(login -> login.loginPage("/login").permitAll())
-                .csrf().disable()
-                .build();
+                .authenticated().and().build();
     }
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+        @Bean
+        AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws
+        Exception {
+            return authenticationConfiguration.getAuthenticationManager();
+        }
+
+
     }
-
-
-}
