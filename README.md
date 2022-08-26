@@ -1,2 +1,2 @@
 # BudgetManager
-Budget Managing App will help you fix your finances :)
+Budget Managing App
