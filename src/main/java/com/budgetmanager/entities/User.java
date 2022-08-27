@@ -1,8 +1,10 @@
 package com.budgetmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,20 +32,12 @@ public class User {
     )
     private Set<UserRole> allRoles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private Collection<Budget> budget;
+
     public UserRole getUserRoleId() {
         return userRoleId;
-    }
-
-    public Set<UserRole> getAllRoles() {
-        return allRoles;
-    }
-
-    public void setAllRoles(Set<UserRole> allRoles) {
-        this.allRoles = allRoles;
-    }
-
-    public void setUserRoleId(UserRole userId) {
-        this.userRoleId = userId;
     }
 
     public Long getId() {
@@ -68,6 +62,26 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setUserRoleId(UserRole userRoleId) {
+        this.userRoleId = userRoleId;
+    }
+
+    public Set<UserRole> getAllRoles() {
+        return allRoles;
+    }
+
+    public void setAllRoles(Set<UserRole> allRoles) {
+        this.allRoles = allRoles;
+    }
+
+    public Collection<Budget> getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Collection<Budget> budget) {
+        this.budget = budget;
     }
 
     @Override

@@ -24,4 +24,5 @@ public class RegistrationController {
         registrationService.registerUser(userRegisterDto);
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
     }
+
 }
