@@ -26,4 +26,9 @@ public class UserService {
         String loggedUserLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByLogin(loggedUserLogin);
     }
+
+
+    public Long getLoggedUserId() {
+        return getLoggedUser().get().getId();
+    }
 }

@@ -3,8 +3,6 @@ package com.budgetmanager.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "budget")
@@ -17,9 +15,22 @@ public class Budget {
     private int expense;
 
     @ManyToOne
+    @JoinColumn(name = "day_number")
+    @JsonBackReference
+    private History history;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+
+    public History getHistory() {
+        return history;
+    }
+
+    public void setHistory(History history) {
+        this.history = history;
+    }
 
     public User getUser() {
         return user;
@@ -28,6 +39,7 @@ public class Budget {
     public void setUser(User user) {
         this.user = user;
     }
+
 
     public Long getId() {
         return id;

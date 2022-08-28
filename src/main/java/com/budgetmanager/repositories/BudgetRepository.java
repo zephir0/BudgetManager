@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BudgetRepository extends CrudRepository<Budget, Long> {
     Iterable<Budget> findAllByUserId(Long id);
+
 }
