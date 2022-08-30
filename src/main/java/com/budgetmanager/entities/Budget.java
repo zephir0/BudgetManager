@@ -13,24 +13,27 @@ public class Budget {
 
     private int income;
     private int expense;
+    @Column(name = "history_day_number")
+    private int historyDayNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "day_number")
-    @JsonBackReference
-    private History history;
+//    private int dayNumber;
+
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
-    public History getHistory() {
-        return history;
+
+    public void setHistoryDayNumber(int historyDayNumber) {
+        this.historyDayNumber = historyDayNumber;
     }
 
-    public void setHistory(History history) {
-        this.history = history;
+    public int getHistoryDayNumber() {
+        return historyDayNumber;
     }
+
 
     public User getUser() {
         return user;

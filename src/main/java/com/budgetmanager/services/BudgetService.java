@@ -8,7 +8,6 @@ import com.budgetmanager.repositories.BudgetRepository;
 import com.budgetmanager.repositories.HistoryRepository;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,16 +16,13 @@ import java.util.Optional;
 public class BudgetService {
     private final BudgetRepository budgetRepository;
     private final UserService userService;
-    private final HistoryRepository historyRepository;
     private final HistoryService historyService;
 
     public BudgetService(BudgetRepository budgetRepository,
                          UserService userService,
-                         HistoryRepository historyRepository,
                          HistoryService historyService) {
         this.budgetRepository = budgetRepository;
         this.userService = userService;
-        this.historyRepository = historyRepository;
         this.historyService = historyService;
     }
 
@@ -35,7 +31,6 @@ public class BudgetService {
         if (historyService.isHistoryEmpty()) {
             historyService.createFirstHistoryDay();
         }
-
         Budget budget = mapper(budgetdto);
         budgetRepository.save(budget);
     }
@@ -50,27 +45,18 @@ public class BudgetService {
         return budgetList;
     }
 
+    //TO BE CHANGED AFTER SORTING DAY NUMBER FROM HISTORIES
     public Budget mapper(BudgetDto budgetDto) {
-
         Budget budget = new Budget();
         budget.setUser(userService
                 .getLoggedUser()
                 .get());
         budget.setExpense(budgetDto.getExpense());
         budget.setIncome(budgetDto.getIncome());
+        budget.setHistoryDayNumber(historyService.getHistoryDayNumber());
         return budget;
     }
-
-    public int findHighestDayNumber() {
-        return historyRepository.highestBudgetDayNumber(getLoggedUserId());
-    }
-
-    public void increaseDayNumber() {
-        History history = new History();
-        int dayNumber = findHighestDayNumber() + 1;
-        history.setBudgetDayNumber(dayNumber);
-        historyRepository.save(history);
-    }
+    //INCREASE DAY NUMBER IN BUDGET TABLE - TO BO DONE
 
     public Long getLoggedUserId() {
         Optional<User> user = userService.getLoggedUser();
@@ -82,7 +68,7 @@ public class BudgetService {
 
     public int countAllIncomes() {
         int allIncomes = 0;
-        for (Budget budget : activeUser()) {
+        for (Budget budget : allBudgetListForUserId()) {
             allIncomes += budget.getIncome();
         }
         return allIncomes;
@@ -90,7 +76,7 @@ public class BudgetService {
 
     public int countAllExpenses() {
         int allExpenses = 0;
-        for (Budget budget : activeUser()) {
+        for (Budget budget : allBudgetListForUserId()) {
             allExpenses += budget.getExpense();
         }
         return allExpenses;
@@ -100,7 +86,7 @@ public class BudgetService {
         return countAllIncomes() - countAllExpenses();
     }
 
-    Iterable<Budget> activeUser() {
+    Iterable<Budget> allBudgetListForUserId() {
         return budgetRepository.findAllByUserId(getLoggedUserId());
     }
 
@@ -110,7 +96,7 @@ public class BudgetService {
         List<Integer> expenseList = new ArrayList<>();
         List<Integer> incomeList = new ArrayList<>();
 
-        for (Budget budget : activeUser()) {
+        for (Budget budget : allBudgetListForUserId()) {
             expenseList.add(budget.getExpense());
             incomeList.add(budget.getIncome());
         }
@@ -120,5 +106,14 @@ public class BudgetService {
         return allList;
     }
 
+    public List<Budget> showAllBudgetByUserId(Long id) {
+        List<Budget> budgetList = new ArrayList<>();
+        budgetRepository.findAllByUserId(id).forEach(budgetList::add);
+        return budgetList;
+    }
+
+    public List<Budget> showBudgetByHistoryDayNumberAndUserId(int day, Long id) {
+        return budgetRepository.findAllByHistoryDayNumberAndUserId(day, id);
+    }
 
 }

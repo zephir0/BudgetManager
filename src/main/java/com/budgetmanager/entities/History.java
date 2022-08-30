@@ -16,9 +16,6 @@ public class History {
     @Column(name = "budget_day_number")
     private int budgetDayNumber;
 
-    @OneToMany(mappedBy = "history")
-    @JsonManagedReference
-    private List<Budget> budgetList;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -48,12 +45,5 @@ public class History {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public List<Budget> getBudgetList() {
-        return budgetList;
-    }
-
-    public void setBudgetList(List<Budget> budgetList) {
-        this.budgetList = budgetList;
-    }
 }
+

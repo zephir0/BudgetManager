@@ -1,6 +1,7 @@
 package com.budgetmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
+    @JsonIgnoreProperties("user")
     private Set<UserRole> allRoles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")

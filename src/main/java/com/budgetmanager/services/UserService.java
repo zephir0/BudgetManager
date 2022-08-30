@@ -22,6 +22,10 @@ public class UserService {
         return userRepository.findByLogin(login).map(UserLoginDtoMapper::map);
     }
 
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findUserById(id);
+    }
+
     public Optional<User> getLoggedUser() {
         String loggedUserLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByLogin(loggedUserLogin);
