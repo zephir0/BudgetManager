@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletContext;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +31,12 @@ public class UserService {
     public Optional<User> getLoggedUser() {
         String loggedUserLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByLogin(loggedUserLogin);
+    }
+
+    public List<User> findAllUsers() {
+        List<User> userList = new ArrayList<>();
+        userRepository.findAll().forEach(userList::add);
+        return userList;
     }
 
 

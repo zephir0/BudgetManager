@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/history/")
@@ -18,7 +17,7 @@ public class HistoryController {
         this.historyService = historyService;
     }
 
-    @PostMapping("/createday")
+    @PostMapping("/create")
     ResponseEntity<String> createNextHistoryDay() {
         historyService.createNextDay();
         return new ResponseEntity<>("Next day created successfully", HttpStatus.CREATED);
