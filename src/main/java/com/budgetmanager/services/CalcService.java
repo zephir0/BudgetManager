@@ -16,7 +16,6 @@ public class CalcService {
                 calculateYearlyBudget(calcDto.getIncomes(), calcDto.getExpenses());
     }
 
-
     public int calculateYearlyBudget(List<Integer> incomes,
                                      List<Integer> expenses) {
         int result = 0;

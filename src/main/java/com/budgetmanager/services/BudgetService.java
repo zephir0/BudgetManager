@@ -2,10 +2,8 @@ package com.budgetmanager.services;
 
 import com.budgetmanager.DTOs.BudgetDto;
 import com.budgetmanager.entities.Budget;
-import com.budgetmanager.entities.History;
 import com.budgetmanager.entities.User;
 import com.budgetmanager.repositories.BudgetRepository;
-import com.budgetmanager.repositories.HistoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ public class BudgetService {
         budgetRepository.save(budget);
     }
 
+
     public List<Budget> showAllBudget() {
         List<Budget> budgetList = new ArrayList<>();
         Long userId = userService.getLoggedUser()
@@ -55,6 +54,10 @@ public class BudgetService {
         budget.setIncome(budgetDto.getIncome());
         budget.setHistoryDayNumber(historyService.getHistoryDayNumber());
         return budget;
+    }
+
+    public void deleteByBudgetId(Long id) {
+        budgetRepository.deleteById(id);
     }
     //INCREASE DAY NUMBER IN BUDGET TABLE - TO BO DONE
 
@@ -112,7 +115,8 @@ public class BudgetService {
         return budgetList;
     }
 
-    public List<Budget> showBudgetByHistoryDayNumberAndUserId(int day, Long id) {
+    public List<Budget> showBudgetByHistoryDayNumberAndUserId(int day,
+                                                              Long id) {
         return budgetRepository.findAllByHistoryDayNumberAndUserId(day, id);
     }
 

@@ -17,5 +17,6 @@ public interface HistoryRepository extends CrudRepository<History, Integer> {
 
     Optional<History> findByBudgetDayNumberAndUserId(int dayNumber,
                                                      Long id);
+
     List<History> findAllByUserId(Long id);
 }

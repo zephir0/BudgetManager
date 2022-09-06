@@ -12,6 +12,10 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 public class User {
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    @JsonBackReference
+    UserRole userRoleId;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -20,11 +24,6 @@ public class User {
     private String login;
     @Column(name = "password")
     private String password;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    @JsonBackReference
-    UserRole userRoleId;
-
     @ManyToMany
     @JoinTable(
             name = "user_roles",
@@ -54,6 +53,10 @@ public class User {
         return userRoleId;
     }
 
+    public void setUserRoleId(UserRole userRoleId) {
+        this.userRoleId = userRoleId;
+    }
+
     public Long getId() {
         return id;
     }
@@ -76,10 +79,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setUserRoleId(UserRole userRoleId) {
-        this.userRoleId = userRoleId;
     }
 
     public Set<UserRole> getAllRoles() {

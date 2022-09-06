@@ -25,6 +25,12 @@ public class BudgetController {
         return new ResponseEntity<>("Budget item added", HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/delete/{id}")
+    ResponseEntity<String> deleteBudget(@PathVariable("id") Long id) {
+        budgetService.deleteByBudgetId(id);
+        return new ResponseEntity<>("Budget item removed", HttpStatus.OK);
+    }
+
     @GetMapping("/list")
     List<Budget> showLoggedUserAllBudget() {
         return budgetService.showAllBudget();

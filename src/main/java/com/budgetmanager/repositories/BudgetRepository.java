@@ -12,6 +12,8 @@ public interface BudgetRepository extends CrudRepository<Budget, Long> {
 
     List<Budget> findAllByHistoryDayNumberAndUserId(int day,
                                                     Long id);
+
+    void deleteById(Long id);
 }
 
 

@@ -7,7 +7,6 @@ import com.budgetmanager.repositories.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +31,7 @@ public class UserService {
         String loggedUserLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByLogin(loggedUserLogin);
     }
+
 
     public List<User> findAllUsers() {
         List<User> userList = new ArrayList<>();

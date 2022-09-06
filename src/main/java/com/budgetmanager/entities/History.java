@@ -1,10 +1,8 @@
 package com.budgetmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "history")
