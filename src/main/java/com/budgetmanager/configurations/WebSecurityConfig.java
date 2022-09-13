@@ -18,6 +18,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain configuration(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/api/admin").hasRole("ADMIN")
+                .and()
+                .authorizeRequests()
+                .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+                .and()
+                .authorizeRequests()
                 .antMatchers("/auth/api/**")
                 .permitAll()
                 .anyRequest()

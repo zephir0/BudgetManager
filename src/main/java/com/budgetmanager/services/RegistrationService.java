@@ -16,7 +16,6 @@ import java.util.Optional;
 public class RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final RoleRepository roleRepository;
 
     public RegistrationService(UserRepository userRepository,
@@ -50,16 +49,11 @@ public class RegistrationService {
     }
 
     public void addRoleToUser(User user) {
-        Optional<UserRole> userRolesRepositoryByDescription = roleRepository
-                .findByDescription("ADMIN");
+        Optional<UserRole> userRolesRepositoryByDescription = roleRepository.findByDescription("ADMIN");
 
-        userRolesRepositoryByDescription.ifPresentOrElse(
-                role -> user
-                        .getAllRoles()
-                        .add(role),
-                () -> {
-                    throw new UserRolesNotFoundException("User role not found.");
-                });
+        userRolesRepositoryByDescription.ifPresentOrElse(role -> user.getAllRoles().add(role), () -> {
+            throw new UserRolesNotFoundException("User role not found.");
+        });
 
         user.setUserRoleId(userRolesRepositoryByDescription.get());
     }

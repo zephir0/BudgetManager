@@ -9,8 +9,11 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @DataJpaTest
@@ -36,6 +39,7 @@ public class BudgetRepositoryTests {
     @Order(2)
     public void deleteBudgetById() {
         budgetRepository.deleteById(14L);
+        assertFalse(budgetRepository.existsById(14L));
     }
 
     @Test

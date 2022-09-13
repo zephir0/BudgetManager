@@ -20,8 +20,7 @@ public class HistoryService {
     }
 
     public int getHighestHistoryNumber() {
-        User user = userService.getLoggedUser().get();
-        return historyRepository.highestBudgetDayNumber(user.getId());
+        return historyRepository.highestBudgetDayNumber(userService.getLoggedUserId());
     }
 
     public void createFirstHistoryDay() {

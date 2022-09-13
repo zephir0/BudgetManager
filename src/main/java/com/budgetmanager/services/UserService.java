@@ -31,12 +31,8 @@ public class UserService {
         String loggedUserLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByLogin(loggedUserLogin);
     }
-
-
     public List<User> findAllUsers() {
-        List<User> userList = new ArrayList<>();
-        userRepository.findAll().forEach(userList::add);
-        return userList;
+        return new ArrayList<>(userRepository.findAll());
     }
 
 

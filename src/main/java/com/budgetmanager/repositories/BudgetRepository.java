@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BudgetRepository extends CrudRepository<Budget, Long> {
-    Iterable<Budget> findAllByUserId(Long id);
+    List<Budget> findAllByUserId(Long id);
 
     List<Budget> findAllByHistoryDayNumberAndUserId(int day,
                                                     Long id);

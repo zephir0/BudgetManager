@@ -40,6 +40,13 @@ public class Budget {
         this.user = user;
     }
 
+    public Budget build(int income,
+                        int expense) {
+        Budget budget = new Budget();
+        budget.setIncome(income);
+        budget.setExpense(expense);
+        return budget;
+    }
 
     public Long getId() {
         return id;

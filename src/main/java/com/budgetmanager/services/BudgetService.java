@@ -33,15 +33,19 @@ public class BudgetService {
         budgetRepository.save(budget);
     }
 
+    public void changeBudget(Long id,
+                             BudgetDto budgetDto) {
+        budgetRepository.findById(id).ifPresent(
+                budget -> {
+                    budget.setExpense(budgetDto.getExpense());
+                    budget.setIncome(budgetDto.getIncome());
+                    budgetRepository.save(budget);
+                });
+    }
+
 
     public List<Budget> showAllBudget() {
-        List<Budget> budgetList = new ArrayList<>();
-        Long userId = userService.getLoggedUser()
-                .get()
-                .getId();
-        Iterable<Budget> allByUserId = budgetRepository.findAllByUserId(userId);
-        allByUserId.forEach(budgetList::add);
-        return budgetList;
+        return new ArrayList<>(budgetRepository.findAllByUserId(userService.getLoggedUserId()));
     }
 
     //TO BE CHANGED AFTER SORTING DAY NUMBER FROM HISTORIES
@@ -54,6 +58,10 @@ public class BudgetService {
         budget.setIncome(budgetDto.getIncome());
         budget.setHistoryDayNumber(historyService.getHistoryDayNumber());
         return budget;
+    }
+
+    public User getBudgetCreator(Long id) {
+        return budgetRepository.findById(id).get().getUser();
     }
 
     public void deleteByBudgetId(Long id) {

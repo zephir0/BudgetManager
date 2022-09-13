@@ -3,6 +3,7 @@ package com.budgetmanager.controllers;
 import com.budgetmanager.DTOs.BudgetDto;
 import com.budgetmanager.entities.Budget;
 import com.budgetmanager.services.BudgetService;
+import com.budgetmanager.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,27 +14,49 @@ import java.util.List;
 @RequestMapping("/api/budget")
 public class BudgetController {
     private final BudgetService budgetService;
+    private final UserService userService;
 
-    public BudgetController(BudgetService budgetService) {
+    public BudgetController(BudgetService budgetService,
+                            UserService userService) {
         this.budgetService = budgetService;
+        this.userService = userService;
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     ResponseEntity<String> addBudget(@RequestBody
                                      BudgetDto budgetDto) {
         budgetService.addBudget(budgetDto);
         return new ResponseEntity<>("Budget item added", HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{id}")
-    ResponseEntity<String> deleteBudget(@PathVariable("id") Long id) {
-        budgetService.deleteByBudgetId(id);
-        return new ResponseEntity<>("Budget item removed", HttpStatus.OK);
+    @PutMapping("{id}")
+    ResponseEntity<String> changeBudget(@RequestBody BudgetDto budgetDto,
+                                        @PathVariable("id") Long id) {
+        if (userService.getLoggedUser().get().equals(budgetService.getBudgetCreator(id))) {
+            budgetService.changeBudget(id, budgetDto);
+            return new ResponseEntity<>("Budget changed", HttpStatus.OK);
+        } else
+            return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.UNAUTHORIZED);
     }
 
-    @GetMapping("/list")
+    @DeleteMapping("/{id}")
+    ResponseEntity<String> deleteBudget(@PathVariable("id") Long id) {
+        if (userService.getLoggedUser().get().equals(budgetService.getBudgetCreator(id))) {
+            budgetService.deleteByBudgetId(id);
+            return new ResponseEntity<>("Budget item removed", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @GetMapping("/findAll")
     List<Budget> showLoggedUserAllBudget() {
         return budgetService.showAllBudget();
+    }
+
+    @GetMapping("/findAll/{dayNumber}")
+    List<Budget> findBudgetByHistoryDayNumberAndUserId(@PathVariable("dayNumber") int day) {
+        return budgetService.showBudgetByHistoryDayNumberAndUserId(day, userService.getLoggedUserId());
     }
 
     @GetMapping("/count/incomes")
@@ -50,18 +73,4 @@ public class BudgetController {
     int countBudgetValue() {
         return budgetService.countAllBudgetValue();
     }
-
-    @GetMapping("/find/userid/{id}")
-    List<Budget> showAllBudgetByUserId(@PathVariable("id") Long id) {
-        return budgetService.showAllBudgetByUserId(id);
-    }
-
-    @GetMapping("/find/history/{userid}/{day}")
-    List<Budget> findBudgetByHistoryDayNumberAndUserId(@PathVariable("day") int day,
-                                                       @PathVariable("userid") Long id) {
-        return budgetService.showBudgetByHistoryDayNumberAndUserId(day, id);
-
-    }
-
-
 }
