@@ -37,17 +37,7 @@ public class User {
     @JsonManagedReference
     private Collection<Budget> budget;
 
-    @OneToMany(mappedBy = "user")
-    @JsonManagedReference
-    private Collection<History> historyCollection;
 
-    public Collection<History> getHistoryCollection() {
-        return historyCollection;
-    }
-
-    public void setHistoryCollection(Collection<History> historyCollection) {
-        this.historyCollection = historyCollection;
-    }
 
     public UserRole getUserRoleId() {
         return userRoleId;

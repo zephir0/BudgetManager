@@ -10,8 +10,11 @@ import java.util.List;
 public interface BudgetRepository extends CrudRepository<Budget, Long> {
     List<Budget> findAllByUserId(Long id);
 
-    List<Budget> findAllByHistoryDayNumberAndUserId(int day,
+    List<Budget> findAllByHistoryDayNumberAndUserId(String day,
                                                     Long id);
+
+
+
 
     void deleteById(Long id);
 }

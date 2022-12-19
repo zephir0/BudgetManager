@@ -14,7 +14,7 @@ public class Budget {
     private int income;
     private int expense;
     @Column(name = "history_day_number")
-    private int historyDayNumber;
+    private String historyDayNumber;
 
 //    private int dayNumber;
 
@@ -24,11 +24,11 @@ public class Budget {
     @JsonBackReference
     private User user;
 
-    public int getHistoryDayNumber() {
+    public String getHistoryDayNumber() {
         return historyDayNumber;
     }
 
-    public void setHistoryDayNumber(int historyDayNumber) {
+    public void setHistoryDayNumber(String historyDayNumber) {
         this.historyDayNumber = historyDayNumber;
     }
 

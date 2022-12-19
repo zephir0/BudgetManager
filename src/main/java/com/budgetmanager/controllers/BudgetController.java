@@ -5,6 +5,7 @@ import com.budgetmanager.entities.Budget;
 import com.budgetmanager.services.BudgetService;
 import com.budgetmanager.services.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class BudgetController {
         this.userService = userService;
     }
 
-    @PostMapping()
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> addBudget(@RequestBody
                                      BudgetDto budgetDto) {
         budgetService.addBudget(budgetDto);
@@ -55,7 +56,7 @@ public class BudgetController {
     }
 
     @GetMapping("/findAll/{dayNumber}")
-    List<Budget> findBudgetByHistoryDayNumberAndUserId(@PathVariable("dayNumber") int day) {
+    List<Budget> findBudgetByHistoryDayNumberAndUserId(@PathVariable("dayNumber") String day) {
         return budgetService.showBudgetByHistoryDayNumberAndUserId(day, userService.getLoggedUserId());
     }
 
@@ -69,6 +70,7 @@ public class BudgetController {
         return budgetService.countAllExpenses();
     }
 
+    //TO BE RENAMED TO BALANCE
     @GetMapping("/count/total")
     int countBudgetValue() {
         return budgetService.countAllBudgetValue();

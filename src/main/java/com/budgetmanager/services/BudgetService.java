@@ -6,6 +6,8 @@ import com.budgetmanager.entities.User;
 import com.budgetmanager.repositories.BudgetRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,21 +16,16 @@ import java.util.Optional;
 public class BudgetService {
     private final BudgetRepository budgetRepository;
     private final UserService userService;
-    private final HistoryService historyService;
+
 
     public BudgetService(BudgetRepository budgetRepository,
-                         UserService userService,
-                         HistoryService historyService) {
+                         UserService userService) {
         this.budgetRepository = budgetRepository;
         this.userService = userService;
-        this.historyService = historyService;
     }
 
 
     public void addBudget(BudgetDto budgetdto) {
-        if (historyService.isHistoryEmpty()) {
-            historyService.createFirstHistoryDay();
-        }
         Budget budget = mapper(budgetdto);
         budgetRepository.save(budget);
     }
@@ -56,7 +53,7 @@ public class BudgetService {
                 .get());
         budget.setExpense(budgetDto.getExpense());
         budget.setIncome(budgetDto.getIncome());
-        budget.setHistoryDayNumber(historyService.getHistoryDayNumber());
+        budget.setHistoryDayNumber(LocalDate.now().toString());
         return budget;
     }
 
@@ -123,7 +120,7 @@ public class BudgetService {
         return budgetList;
     }
 
-    public List<Budget> showBudgetByHistoryDayNumberAndUserId(int day,
+    public List<Budget> showBudgetByHistoryDayNumberAndUserId(String day,
                                                               Long id) {
         return budgetRepository.findAllByHistoryDayNumberAndUserId(day, id);
     }
