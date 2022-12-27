@@ -2,8 +2,8 @@ server:
   port: 9999
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/BudgetManager
-    username: root
-    password: xx33xx12
+    url: jdbc:mysql://b9ab8e76f9f303:6a46bf38@us-cdbr-east-06.cleardb.net/heroku_ee6fe0a8bca57f0?reconnect=true
+    username: b9ab8e76f9f303
+    password: 6a46bf38
   jpa:
     show-sql: true
