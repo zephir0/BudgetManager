@@ -30,7 +30,7 @@ public class BudgetController {
         return new ResponseEntity<>("Budget item added", HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     ResponseEntity<String> changeBudget(@RequestBody BudgetDto budgetDto,
                                         @PathVariable("id") Long id) {
         if (userService.getLoggedUser().get().equals(budgetService.getBudgetCreator(id))) {
