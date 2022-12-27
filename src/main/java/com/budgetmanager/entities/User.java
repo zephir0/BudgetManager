@@ -1,8 +1,10 @@
 package com.budgetmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,15 +32,13 @@ public class User {
     )
     private Set<UserRole> allRoles = new HashSet<>();
 
-<<<<<<< HEAD
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private Collection<Budget> budget;
 
 
 
-=======
->>>>>>> main
+
     public UserRole getUserRoleId() {
         return userRoleId;
     }
