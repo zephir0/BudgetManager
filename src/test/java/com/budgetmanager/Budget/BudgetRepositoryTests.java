@@ -36,19 +36,19 @@ public class BudgetRepositoryTests {
         assertThat(budgetId).isNotNull();
     }
 
-    @Test
-    @Order(2)
-    public void deleteBudgetById() {
-        budgetRepository.deleteById(14L);
-        assertFalse(budgetRepository.existsById(14L));
-    }
+//    @Test
+//    @Order(2)
+//    public void deleteBudgetById() {
+//        budgetRepository.deleteById(14L);
+//        assertFalse(budgetRepository.existsById(14L));
+//    }
 
-    @Test
-    @Order(3)
-    public void findAllByHistoryDayNumberAndUserId() {
-        List<Budget> allByHistoryDayNumberAndUserId = budgetRepository.findAllByHistoryDayNumberAndUserId(3, 1L);
-        assertThat(allByHistoryDayNumberAndUserId.size()).isGreaterThan(0);
-    }
+//    @Test
+//    @Order(3)
+//    public void findAllByHistoryDayNumberAndUserId() {
+//        List<Budget> allByHistoryDayNumberAndUserId = budgetRepository.findAllByHistoryDayNumberAndUserId(, 1L);
+//        assertThat(allByHistoryDayNumberAndUserId.size()).isGreaterThan(0);
+//    }
 
 
 }
