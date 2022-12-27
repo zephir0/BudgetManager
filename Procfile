@@ -1,0 +1,1 @@
+web: java -jar target/BudgetManager 0.1.jar

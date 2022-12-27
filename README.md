@@ -1,4 +1,4 @@
-# BudgetManager
+# BudgetManager REST API
 Budget Managing App
 
 # Rest APIs Documentation
