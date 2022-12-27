@@ -30,6 +30,15 @@ public class User {
     )
     private Set<UserRole> allRoles = new HashSet<>();
 
+<<<<<<< HEAD
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private Collection<Budget> budget;
+
+
+
+=======
+>>>>>>> main
     public UserRole getUserRoleId() {
         return userRoleId;
     }

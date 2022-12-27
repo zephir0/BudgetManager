@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +30,7 @@ public class BudgetRepositoryTests {
         Budget budget = new Budget();
         budget.setIncome(200);
         budget.setExpense(200);
-        budget.setHistoryDayNumber(1);
+        budget.setHistoryDayNumber(LocalDate.now().toString());
         budgetRepository.save(budget);
         Long budgetId = budgetRepository.findById(budget.getId()).get().getId();
         assertThat(budgetId).isNotNull();
