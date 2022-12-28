@@ -33,21 +33,15 @@ public class BudgetController {
     @PutMapping("{id}")
     ResponseEntity<String> changeBudget(@RequestBody BudgetDto budgetDto,
                                         @PathVariable("id") Long id) {
-        if (userService.getLoggedUser().get().equals(budgetService.getBudgetCreator(id))) {
-            budgetService.changeBudget(id, budgetDto);
-            return new ResponseEntity<>("Budget changed", HttpStatus.OK);
-        } else
-            return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.UNAUTHORIZED);
+        budgetService.changeBudget(id, budgetDto);
+        return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.UNAUTHORIZED);
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<String> deleteBudget(@PathVariable("id") Long id) {
-        if (userService.getLoggedUser().get().equals(budgetService.getBudgetCreator(id))) {
-            budgetService.deleteByBudgetId(id);
-            return new ResponseEntity<>("Budget item removed", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.UNAUTHORIZED);
-        }
+        budgetService.deleteByBudgetId(id);
+        return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.OK);
+
     }
 
     @GetMapping("/findAll")

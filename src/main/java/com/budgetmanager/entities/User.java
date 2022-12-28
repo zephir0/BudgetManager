@@ -3,16 +3,17 @@ package com.budgetmanager.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.Cacheable;
+
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+
+@Cacheable(cacheNames = "users")
 @Table(name = "user")
 public class User {
     @ManyToOne
@@ -27,7 +28,7 @@ public class User {
     private String login;
     @Column(name = "password")
     private String password;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -36,7 +37,7 @@ public class User {
     @JsonIgnoreProperties("user")
     private Set<UserRole> allRoles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Collection<Budget> budget;
 

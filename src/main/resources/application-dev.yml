@@ -1,4 +1,7 @@
 spring:
+  cache:
+    type: simple
+    cache-names: budgets, users
   datasource:
     url: jdbc:mysql://localhost:3306/budgetmanager
     username: root
