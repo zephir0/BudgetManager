@@ -1,10 +1,12 @@
 package com.budgetmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.cache.annotation.CacheConfig;
 
 import javax.persistence.*;
 
 @Entity
+@Cacheable
 @Table(name = "budget")
 public class Budget {
     @Id
