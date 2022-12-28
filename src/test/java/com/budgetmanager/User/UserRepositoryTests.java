@@ -2,7 +2,6 @@ package com.budgetmanager.User;
 
 import com.budgetmanager.entities.User;
 import com.budgetmanager.repositories.UserRepository;
-import com.budgetmanager.services.RegistrationService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

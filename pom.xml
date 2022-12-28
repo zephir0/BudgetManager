@@ -14,6 +14,7 @@
     <name>BudgetManager</name>
     <description>BudgetManager</description>
     <properties>
+        <skipTests>true</skipTests>
         <java.version>11</java.version>
     </properties>
     <dependencies>
@@ -63,7 +64,7 @@
     </dependencies>
 
     <build>
-        <finalName>BudgetManager 0.1</finalName>
+        <finalName>BudgetManager</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -78,6 +79,7 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>
