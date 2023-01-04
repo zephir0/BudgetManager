@@ -14,21 +14,11 @@ public class UserRole {
     private Long id;
     private String description;
 
-    @OneToMany(mappedBy = "roleId")
-    @JsonManagedReference
-    private Set<UserRoles> userRolesSet;
 
     @OneToMany(mappedBy = "userRoleId")
     @JsonManagedReference
     private Collection<User> user;
 
-    public Set<UserRoles> getUserRolesSet() {
-        return userRolesSet;
-    }
-
-    public void setUserRolesSet(Set<UserRoles> userRolesSet) {
-        this.userRolesSet = userRolesSet;
-    }
 
     public Collection<User> getUser() {
         return user;
