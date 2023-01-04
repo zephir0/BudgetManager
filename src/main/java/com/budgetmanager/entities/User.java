@@ -28,14 +28,7 @@ public class User {
     private String login;
     @Column(name = "password")
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    @JsonIgnoreProperties("user")
-    private Set<UserRole> allRoles = new HashSet<>();
+
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -75,13 +68,6 @@ public class User {
         this.password = password;
     }
 
-    public Set<UserRole> getAllRoles() {
-        return allRoles;
-    }
-
-    public void setAllRoles(Set<UserRole> allRoles) {
-        this.allRoles = allRoles;
-    }
 
     public Collection<Budget> getBudget() {
         return budget;
