@@ -7,6 +7,9 @@ import com.budgetmanager.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,15 +37,29 @@ public class BudgetController {
     ResponseEntity<String> changeBudget(@RequestBody BudgetDto budgetDto,
                                         @PathVariable("id") Long id) {
         budgetService.changeBudget(id, budgetDto);
-        return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>("Budget changed", HttpStatus.UNAUTHORIZED);
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<String> deleteBudget(@PathVariable("id") Long id) {
         budgetService.deleteByBudgetId(id);
-        return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.OK);
+        return new ResponseEntity<>("Budget deleted", HttpStatus.OK);
 
     }
+
+    @DeleteMapping()
+    ResponseEntity<String> deleteAllBudgets() {
+        System.out.println("USER ID : " + userService.getLoggedUserId());
+        budgetService.deleteAllBudgetsByUserId(userService.getLoggedUserId());
+        return new ResponseEntity<>("All budgets deleted", HttpStatus.OK);
+    }
+
+    @GetMapping()
+    ResponseEntity<Long> printLoggedUserId(){
+        Long loggedUserId = userService.getLoggedUserId();
+        return new ResponseEntity<>(loggedUserId, HttpStatus.OK);
+    }
+
 
     @GetMapping("/findAll")
     List<Budget> showLoggedUserAllBudget() {

@@ -5,6 +5,7 @@ import com.budgetmanager.entities.Budget;
 import com.budgetmanager.entities.User;
 import com.budgetmanager.repositories.BudgetRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,7 +65,11 @@ public class BudgetService {
     public void deleteByBudgetId(Long id) {
         budgetRepository.deleteById(id);
     }
-    //INCREASE DAY NUMBER IN BUDGET TABLE - TO BO DONE
+
+    @Transactional
+    public void deleteAllBudgetsByUserId(Long id){
+        budgetRepository.deleteAllByUserId(id);
+    }
 
     public Long getLoggedUserId() {
         Optional<User> user = userService.getLoggedUser();
