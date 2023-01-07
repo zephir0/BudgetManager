@@ -5,12 +5,11 @@ import com.budgetmanager.entities.Budget;
 import com.budgetmanager.entities.User;
 import com.budgetmanager.repositories.BudgetRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BudgetService {
@@ -26,7 +25,7 @@ public class BudgetService {
 
 
     public void addBudget(BudgetDto budgetdto) {
-        Budget budget = mapper(budgetdto);
+        Budget budget = BudgetMapper.map(budgetdto, userService.getLoggedUser().get());
         budgetRepository.save(budget);
     }
 
@@ -45,73 +44,42 @@ public class BudgetService {
         return new ArrayList<>(budgetRepository.findAllByUserId(userService.getLoggedUserId()));
     }
 
-    //TO BE CHANGED AFTER SORTING DAY NUMBER FROM HISTORIES
-    public Budget mapper(BudgetDto budgetDto) {
-        Budget budget = new Budget();
-        budget.setUser(userService
-                .getLoggedUser()
-                .get());
-        budget.setExpense(budgetDto.getExpense());
-        budget.setIncome(budgetDto.getIncome());
-        budget.setHistoryDayNumber(LocalDate.now().toString());
-        return budget;
-    }
-
-    public User getBudgetCreator(Long id) {
-        return budgetRepository.findById(id).get().getUser();
-    }
 
     public void deleteByBudgetId(Long id) {
         budgetRepository.deleteById(id);
     }
-    //INCREASE DAY NUMBER IN BUDGET TABLE - TO BO DONE
+
+    @Transactional
+    public void deleteAllBudgetsByUserId(Long id) {
+        budgetRepository.deleteAllByUserId(id);
+    }
 
     public Long getLoggedUserId() {
-        Optional<User> user = userService.getLoggedUser();
-        if (user.isEmpty()) {
-            throw new RuntimeException("User not found / Not authorized");
-        }
-        return user.get().getId();
+        User user = userService.getLoggedUser().orElseThrow(() -> new RuntimeException("User not found / Not authorized"));
+        return user.getId();
     }
 
-    public int countAllIncomes() {
-        int allIncomes = 0;
+    public int count(String type) {
+        int result = 0;
         for (Budget budget : allBudgetListForUserId()) {
-            allIncomes += budget.getIncome();
+            if ("incomes".equals(type)) {
+                result += budget.getIncome();
+            } else if ("expenses".equals(type)) {
+                result += budget.getExpense();
+            } else {
+                throw new IllegalArgumentException("Invalid type: " + type);
+            }
         }
-        return allIncomes;
+        return result;
     }
 
-    public int countAllExpenses() {
-        int allExpenses = 0;
-        for (Budget budget : allBudgetListForUserId()) {
-            allExpenses += budget.getExpense();
-        }
-        return allExpenses;
-    }
 
     public int countAllBudgetValue() {
-        return countAllIncomes() - countAllExpenses();
+        return count("incomes") - count("expenses");
     }
 
     Iterable<Budget> allBudgetListForUserId() {
         return budgetRepository.findAllByUserId(getLoggedUserId());
-    }
-
-    //TO BE REMOVED OR CHANGED
-    public List<List<Integer>> budgetList() {
-        List<List<Integer>> allList = new ArrayList<>();
-        List<Integer> expenseList = new ArrayList<>();
-        List<Integer> incomeList = new ArrayList<>();
-
-        for (Budget budget : allBudgetListForUserId()) {
-            expenseList.add(budget.getExpense());
-            incomeList.add(budget.getIncome());
-        }
-
-        allList.add(expenseList);
-        allList.add(incomeList);
-        return allList;
     }
 
     public List<Budget> showAllBudgetByUserId(Long id) {
@@ -125,4 +93,15 @@ public class BudgetService {
         return budgetRepository.findAllByHistoryDayNumberAndUserId(day, id);
     }
 
+    static class BudgetMapper {
+        static public Budget map(BudgetDto budgetDto,
+                                 User user) {
+            Budget budget = new Budget();
+            budget.setUser(user);
+            budget.setExpense(budgetDto.getExpense());
+            budget.setIncome(budgetDto.getIncome());
+            budget.setHistoryDayNumber(LocalDate.now().toString());
+            return budget;
+        }
+    }
 }

@@ -34,15 +34,29 @@ public class BudgetController {
     ResponseEntity<String> changeBudget(@RequestBody BudgetDto budgetDto,
                                         @PathVariable("id") Long id) {
         budgetService.changeBudget(id, budgetDto);
-        return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>("Budget changed", HttpStatus.UNAUTHORIZED);
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<String> deleteBudget(@PathVariable("id") Long id) {
         budgetService.deleteByBudgetId(id);
-        return new ResponseEntity<>("You are not a creator of that budget", HttpStatus.OK);
+        return new ResponseEntity<>("Budget deleted", HttpStatus.OK);
 
     }
+
+    @DeleteMapping()
+    ResponseEntity<String> deleteAllBudgets() {
+        System.out.println("USER ID : " + userService.getLoggedUserId());
+        budgetService.deleteAllBudgetsByUserId(userService.getLoggedUserId());
+        return new ResponseEntity<>("All budgets deleted", HttpStatus.OK);
+    }
+
+    @GetMapping()
+    ResponseEntity<Long> printLoggedUserId() {
+        Long loggedUserId = userService.getLoggedUserId();
+        return new ResponseEntity<>(loggedUserId, HttpStatus.OK);
+    }
+
 
     @GetMapping("/findAll")
     List<Budget> showLoggedUserAllBudget() {
@@ -54,17 +68,15 @@ public class BudgetController {
         return budgetService.showBudgetByHistoryDayNumberAndUserId(day, userService.getLoggedUserId());
     }
 
-    @GetMapping("/count/incomes")
-    int countAllLoggedUserIncome() {
-        return budgetService.countAllIncomes();
+    @GetMapping({"/count/incomes", "/count/expenses"})
+    int count(@RequestParam(required = false) String type) {
+        if ("income".equals(type)) {
+            return budgetService.count(type);
+        } else if ("expenses".equals(type)) {
+            return budgetService.count(type);
+        } else throw new IllegalArgumentException("Invalid type: " + type);
     }
 
-    @GetMapping("/count/expenses")
-    int countAllExpenses() {
-        return budgetService.countAllExpenses();
-    }
-
-    //TO BE RENAMED TO BALANCE
     @GetMapping("/count/total")
     int countBudgetValue() {
         return budgetService.countAllBudgetValue();
