@@ -7,9 +7,6 @@ import com.budgetmanager.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,7 +52,7 @@ public class BudgetController {
     }
 
     @GetMapping()
-    ResponseEntity<Long> printLoggedUserId(){
+    ResponseEntity<Long> printLoggedUserId() {
         Long loggedUserId = userService.getLoggedUserId();
         return new ResponseEntity<>(loggedUserId, HttpStatus.OK);
     }
@@ -71,17 +68,15 @@ public class BudgetController {
         return budgetService.showBudgetByHistoryDayNumberAndUserId(day, userService.getLoggedUserId());
     }
 
-    @GetMapping("/count/incomes")
-    int countAllLoggedUserIncome() {
-        return budgetService.countAllIncomes();
+    @GetMapping({"/count/incomes", "/count/expenses"})
+    int count(@RequestParam(required = false) String type) {
+        if ("income".equals(type)) {
+            return budgetService.count(type);
+        } else if ("expenses".equals(type)) {
+            return budgetService.count(type);
+        } else throw new IllegalArgumentException("Invalid type: " + type);
     }
 
-    @GetMapping("/count/expenses")
-    int countAllExpenses() {
-        return budgetService.countAllExpenses();
-    }
-
-    //TO BE RENAMED TO BALANCE
     @GetMapping("/count/total")
     int countBudgetValue() {
         return budgetService.countAllBudgetValue();
