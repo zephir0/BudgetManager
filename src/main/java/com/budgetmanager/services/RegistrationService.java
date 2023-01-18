@@ -2,14 +2,11 @@ package com.budgetmanager.services;
 
 import com.budgetmanager.DTOs.UserRegisterDto;
 import com.budgetmanager.entities.User;
-import com.budgetmanager.entities.UserRole;
 import com.budgetmanager.exceptions.UserAlreadyExistException;
 import com.budgetmanager.repositories.RoleRepository;
 import com.budgetmanager.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class RegistrationService {
@@ -26,17 +23,17 @@ public class RegistrationService {
     }
 
     public void registerUser(UserRegisterDto userRegisterDto) {
-        if (checkIfUserExist(userRegisterDto)) {
+        if (checkIfUserExist(userRegisterDto.getLogin()))
             throw new UserAlreadyExistException("User already exist in database");
-        } else {
+        else {
             User mappedUser = map(userRegisterDto);
             userRepository.save(mappedUser);
         }
 
     }
 
-    public boolean checkIfUserExist(UserRegisterDto userRegisterDto) {
-        return userRepository.existsByLogin(userRegisterDto.getLogin());
+    public boolean checkIfUserExist(String login) {
+        return userRepository.findByLogin(login).isPresent();
     }
 
     public User map(UserRegisterDto userRegisterDto) {
@@ -48,8 +45,7 @@ public class RegistrationService {
     }
 
     public void addRoleToUser(User user) {
-        Optional<UserRole> userRolesRepositoryByDescription = roleRepository.findByDescription("ADMIN");
-        user.setUserRoleId(userRolesRepositoryByDescription.get());
+        user.setUserRole(roleRepository.findByDescription("ADMIN").get());
     }
 
 

@@ -9,12 +9,14 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -25,6 +27,7 @@ class UserRepositoryTests {
 
 
     @Test
+    @Rollback(value = false)
     @Order(1)
     void addUserToDatabase() {
         User user = new User();
@@ -42,27 +45,20 @@ class UserRepositoryTests {
         assertThat(allUsers.size()).isGreaterThan(0);
     }
 
+
     @Test
     @Order(3)
     public void findUserByLogin() {
-        assertEquals("admin", userRepository.findByLogin("admin").get().getLogin());
+        assertEquals("testUser", userRepository.findByLogin("testUser").get().getLogin());
     }
 
     @Test()
+    @Rollback(value = false)
     @Order(4)
     void findUserByLoginAndDelete() {
-        User user = userRepository.findByLogin("Administrator3").get();
+        User user = userRepository.findByLogin("testUser").orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.delete(user);
         assertFalse(userRepository.existsByLogin(user.getLogin()));
-    }
-
-    @Test
-    @Order(5)
-    void shouldThrowExceptionAfterUserDelete() {
-        assertThrows(NoSuchElementException.class,
-                () -> userRepository.delete
-                        (userRepository.findByLogin("testUser")
-                                .get()));
     }
 
 

@@ -1,15 +1,12 @@
 package com.budgetmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.cache.annotation.Cacheable;
 
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 
@@ -19,7 +16,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     @JsonBackReference
-    UserRole userRoleId;
+    UserRole userRole;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -36,12 +33,12 @@ public class User {
 
 
 
-    public UserRole getUserRoleId() {
-        return userRoleId;
+    public UserRole getUserRole() {
+        return userRole;
     }
 
-    public void setUserRoleId(UserRole userRoleId) {
-        this.userRoleId = userRoleId;
+    public void setUserRole(UserRole userRoleId) {
+        this.userRole = userRoleId;
     }
 
     public Long getId() {

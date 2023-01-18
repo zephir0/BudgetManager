@@ -19,7 +19,7 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     @Cacheable(cacheNames = "budgets")
 
     @Override
-    Optional<Budget> findById(Long aLong);
+    Optional<Budget> findById(Long id);
 
     @Cacheable(cacheNames = "budgets")
     List<Budget> findAllByHistoryDayNumberAndUserId(String day,
@@ -27,12 +27,17 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
     @CacheEvict(cacheNames = "budgets", allEntries = true, beforeInvocation = true)
     void deleteById(Long id);
+
     @CacheEvict(cacheNames = "budgets", allEntries = true, beforeInvocation = true)
     void deleteAllByUserId(Long id);
 
     @Override
     @CacheEvict(cacheNames = "budgets", allEntries = true, beforeInvocation = true)
     <S extends Budget> S save(S entity);
+
+    boolean existsByIncome(int income);
+
+    Optional<Budget> findByIncome(int income);
 }
 
 

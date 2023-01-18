@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Set;
 
 @Entity
 @Table(name = "user_role")
@@ -15,7 +14,7 @@ public class UserRole {
     private String description;
 
 
-    @OneToMany(mappedBy = "userRoleId")
+    @OneToMany(mappedBy = "userRole")
     @JsonManagedReference
     private Collection<User> user;
 

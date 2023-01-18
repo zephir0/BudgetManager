@@ -78,14 +78,12 @@ public class BudgetService {
         return count("incomes") - count("expenses");
     }
 
-    Iterable<Budget> allBudgetListForUserId() {
+    public Iterable<Budget> allBudgetListForUserId() {
         return budgetRepository.findAllByUserId(getLoggedUserId());
     }
 
     public List<Budget> showAllBudgetByUserId(Long id) {
-        List<Budget> budgetList = new ArrayList<>();
-        budgetRepository.findAllByUserId(id).forEach(budgetList::add);
-        return budgetList;
+        return new ArrayList<>(budgetRepository.findAllByUserId(id));
     }
 
     public List<Budget> showBudgetByHistoryDayNumberAndUserId(String day,
