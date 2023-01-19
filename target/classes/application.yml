@@ -1,0 +1,17 @@
+spring:
+  cache:
+    type: simple
+    cache-names: budgets, users
+  datasource:
+    url: jdbc:mysql://localhost:3306/budgetmanager
+    username: root
+    password: xx33xx12
+  jpa:
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          region:
+            factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+        show_sql: true

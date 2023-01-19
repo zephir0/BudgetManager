@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.cache.annotation.Cacheable;
 
-
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -26,11 +25,17 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private Collection<Ticket> tickets;
+
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private Collection<ChatMessage> messages;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Collection<Budget> budget;
-
 
 
     public UserRole getUserRole() {
@@ -43,6 +48,22 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    public Collection<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(Collection<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
+    public Collection<ChatMessage> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Collection<ChatMessage> messages) {
+        this.messages = messages;
     }
 
     public void setId(Long id) {
