@@ -1,5 +1,5 @@
 # BudgetManager
-Budget Managing App
+Manage your daily income and expenses with BudgetManager. Categorize, track, and stay on top of your finances with ease.
 
 # Rest APIs Documentation
 
