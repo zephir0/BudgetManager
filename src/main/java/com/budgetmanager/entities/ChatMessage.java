@@ -1,11 +1,13 @@
 package com.budgetmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
+@Cacheable(cacheNames = "budgets")
+
 @Table(name = "chat")
 public class ChatMessage {
     @Id
@@ -15,7 +17,7 @@ public class ChatMessage {
     @JoinColumn(name = "ticket_id")
     @JsonBackReference
     private Ticket ticket;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;

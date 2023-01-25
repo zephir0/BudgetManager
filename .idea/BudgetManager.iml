@@ -21,7 +21,12 @@
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration />
+      <configuration>
+        <fileset id="fileset" name="ChatMessengerConfig" removed="false">
+          <dependency>spring_boot_com.budgetmanager.BudgetManagerApplication</dependency>
+          <file>file://$MODULE_DIR$/src/main/java/com/budgetmanager/configurations/ChatMessengerConfig.java</file>
+        </fileset>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
@@ -136,5 +141,8 @@
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:5.7.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.13.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-websocket:2.7.3" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-messaging:5.3.22" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-websocket:5.3.22" level="project" />
   </component>
 </module>

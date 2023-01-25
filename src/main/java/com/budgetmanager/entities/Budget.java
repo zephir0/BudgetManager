@@ -18,8 +18,6 @@ public class Budget {
     @Column(name = "history_day_number")
     private String historyDayNumber;
 
-//    private int dayNumber;
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")

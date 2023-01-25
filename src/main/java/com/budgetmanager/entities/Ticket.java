@@ -2,11 +2,15 @@ package com.budgetmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
+@Cacheable(cacheNames = "budgets")
+
 @Table(name = "ticket")
 public class Ticket {
     @Id
@@ -17,17 +21,19 @@ public class Ticket {
     @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
-    private Collection<ChatMessage> messages;
+    private Set<ChatMessage> messages;
     private String subject;
     private String message;
     private String status;
     @Column(name = "updated_at")
-    private String createdAt;
+    private String updatedAt;
+
 
     @Column(name = "created_at")
-    private String updatedAt;
+    private String createdAt;
+
 
     public Long getId() {
         return id;
@@ -53,7 +59,7 @@ public class Ticket {
         return messages;
     }
 
-    public void setMessages(Collection<ChatMessage> messages) {
+    public void setMessages(Set<ChatMessage> messages) {
         this.messages = messages;
     }
 

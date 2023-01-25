@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 
@@ -25,13 +26,13 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
-    private Collection<Ticket> tickets;
+    private Set<Ticket> tickets;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
-    private Collection<ChatMessage> messages;
+    private Set<ChatMessage> messages;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -54,7 +55,7 @@ public class User {
         return tickets;
     }
 
-    public void setTickets(Collection<Ticket> tickets) {
+    public void setTickets(Set<Ticket> tickets) {
         this.tickets = tickets;
     }
 
@@ -62,7 +63,7 @@ public class User {
         return messages;
     }
 
-    public void setMessages(Collection<ChatMessage> messages) {
+    public void setMessages(Set<ChatMessage> messages) {
         this.messages = messages;
     }
 

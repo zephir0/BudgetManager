@@ -5,12 +5,11 @@ import com.budgetmanager.entities.ChatMessage;
 import com.budgetmanager.services.ChatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/chat")
 public class ChatController {
     private final ChatService chatService;
@@ -26,8 +25,15 @@ public class ChatController {
         return new ResponseEntity<>("message sent", HttpStatus.OK);
     }
 
-    @GetMapping("/findAll")
-    List<ChatMessage> getAllMessages() {
-        return chatService.messageList();
+    @GetMapping("/{ticketId}")
+    List<ChatMessage> getMessagesByTicketId(@PathVariable("ticketId") Long ticketId) {
+        return chatService.messageList(ticketId);
     }
+
+    @DeleteMapping("/{messageId}")
+    ResponseEntity<String> deleteMessage(@PathVariable("messageId") Long messageId) {
+        chatService.deleteMessage(messageId);
+        return new ResponseEntity<>("message deleted", HttpStatus.OK);
+    }
+
 }
