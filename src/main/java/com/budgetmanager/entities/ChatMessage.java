@@ -7,7 +7,6 @@ import javax.persistence.*;
 
 @Entity
 @Cacheable(cacheNames = "budgets")
-
 @Table(name = "chat")
 public class ChatMessage {
     @Id

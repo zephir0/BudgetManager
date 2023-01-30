@@ -68,15 +68,6 @@ public class BudgetController {
         return budgetService.showBudgetByHistoryDayNumberAndUserId(day, userService.getLoggedUserId());
     }
 
-    @GetMapping({"/count/incomes", "/count/expenses"})
-    int count(@RequestParam(required = false) String type) {
-        if ("income".equals(type)) {
-            return budgetService.count(type);
-        } else if ("expenses".equals(type)) {
-            return budgetService.count(type);
-        } else throw new IllegalArgumentException("Invalid type: " + type);
-    }
-
     @GetMapping("/count/total")
     int countBudgetValue() {
         return budgetService.countAllBudgetValue();

@@ -1,6 +1,7 @@
 package com.budgetmanager.repositories;
 
 import com.budgetmanager.entities.Budget;
+import com.budgetmanager.entities.BudgetType;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
@@ -13,6 +14,10 @@ import java.util.Optional;
 @Repository
 @EnableCaching
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
+    @Cacheable(cacheNames = "budgets")
+    List<Budget> findAllByUserIdAndBudgetType(Long id,
+                                              BudgetType budgetType);
+
     @Cacheable(cacheNames = "budgets")
     List<Budget> findAllByUserId(Long id);
 
@@ -35,9 +40,6 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     @CacheEvict(cacheNames = "budgets", allEntries = true, beforeInvocation = true)
     <S extends Budget> S save(S entity);
 
-    boolean existsByIncome(int income);
-
-    Optional<Budget> findByIncome(int income);
 }
 
 

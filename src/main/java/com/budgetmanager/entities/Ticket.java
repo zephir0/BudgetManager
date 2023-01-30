@@ -10,7 +10,6 @@ import java.util.Set;
 
 @Entity
 @Cacheable(cacheNames = "budgets")
-
 @Table(name = "ticket")
 public class Ticket {
     @Id

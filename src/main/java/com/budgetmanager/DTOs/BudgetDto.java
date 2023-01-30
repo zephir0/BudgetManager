@@ -1,27 +1,40 @@
 package com.budgetmanager.DTOs;
 
+import com.budgetmanager.entities.BudgetType;
+import com.budgetmanager.entities.ExpenseCategory;
+import com.budgetmanager.entities.IncomeCategory;
+
 public class BudgetDto {
-    private final Long id;
-    private final int income;
-    private final int expense;
+    private final int value;
+    private final BudgetType budgetType;
+    private final ExpenseCategory expenseCategory;
+    private final IncomeCategory incomeCategory;
 
-    public BudgetDto(Long id,
-                     int income,
-                     int expense) {
-        this.id = id;
-        this.income = income;
-        this.expense = expense;
+    public BudgetDto(int value,
+                     BudgetType budgetType,
+                     ExpenseCategory expenseCategory,
+                     IncomeCategory incomeCategory) {
+        this.value = value;
+        this.budgetType = budgetType;
+        this.expenseCategory = expenseCategory;
+        this.incomeCategory = incomeCategory;
     }
 
-    public Long getId() {
-        return id;
+
+    public ExpenseCategory getExpenseCategory() {
+        return expenseCategory;
     }
 
-    public int getIncome() {
-        return income;
+    public IncomeCategory getIncomeCategory() {
+        return incomeCategory;
     }
 
-    public int getExpense() {
-        return expense;
+
+    public int getValue() {
+        return value;
+    }
+
+    public BudgetType getBudgetType() {
+        return budgetType;
     }
 }

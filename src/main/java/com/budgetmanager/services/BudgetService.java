@@ -2,8 +2,11 @@ package com.budgetmanager.services;
 
 import com.budgetmanager.DTOs.BudgetDto;
 import com.budgetmanager.entities.Budget;
+import com.budgetmanager.entities.BudgetType;
 import com.budgetmanager.entities.User;
+import com.budgetmanager.exceptions.WrongEnumException;
 import com.budgetmanager.repositories.BudgetRepository;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,18 +28,22 @@ public class BudgetService {
 
 
     public void addBudget(BudgetDto budgetdto) {
-        Budget budget = BudgetMapper.map(budgetdto, userService.getLoggedUser().get());
-        budgetRepository.save(budget);
+        try {
+            Budget budget = BudgetMapper.map(budgetdto, userService.getLoggedUser().get());
+            budgetRepository.save(budget);
+        } catch (HttpMessageNotReadableException e) {
+            throw new WrongEnumException("Wrong enum value");
+        }
+
     }
 
     public void changeBudget(Long id,
                              BudgetDto budgetDto) {
-        budgetRepository.findById(id).ifPresent(
-                budget -> {
-                    budget.setExpense(budgetDto.getExpense());
-                    budget.setIncome(budgetDto.getIncome());
-                    budgetRepository.save(budget);
-                });
+        budgetRepository.findById(id).ifPresent(budget -> {
+            budget.setValue(budgetDto.getValue());
+            budget.setBudgetType(budgetDto.getBudgetType());
+            budgetRepository.save(budget);
+        });
     }
 
 
@@ -59,27 +66,22 @@ public class BudgetService {
         return user.getId();
     }
 
-    public int count(String type) {
-        int result = 0;
-        for (Budget budget : allBudgetListForUserId()) {
-            if ("incomes".equals(type)) {
-                result += budget.getIncome();
-            } else if ("expenses".equals(type)) {
-                result += budget.getExpense();
-            } else {
-                throw new IllegalArgumentException("Invalid type: " + type);
-            }
-        }
-        return result;
-    }
-
-
     public int countAllBudgetValue() {
-        return count("incomes") - count("expenses");
+        int expenses = 0;
+        int incomes = 0;
+        for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.EXPENSE)) {
+            expenses += budget.getValue();
+        }
+        for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.INCOME)) {
+            incomes += budget.getValue();
+        }
+
+        return incomes - expenses;
     }
 
-    public Iterable<Budget> allBudgetListForUserId() {
-        return budgetRepository.findAllByUserId(getLoggedUserId());
+
+    public Iterable<Budget> allBudgetListForUserIdAndBudgetType(BudgetType budgetType) {
+        return budgetRepository.findAllByUserIdAndBudgetType(getLoggedUserId(), budgetType);
     }
 
     public List<Budget> showAllBudgetByUserId(Long id) {
@@ -96,10 +98,19 @@ public class BudgetService {
                                  User user) {
             Budget budget = new Budget();
             budget.setUser(user);
-            budget.setExpense(budgetDto.getExpense());
-            budget.setIncome(budgetDto.getIncome());
+            budget.setValue(budgetDto.getValue());
+            setBudgetCategory(budget, budgetDto);
+            budget.setBudgetType(budgetDto.getBudgetType());
             budget.setHistoryDayNumber(LocalDate.now().toString());
             return budget;
+        }
+
+        static public void setBudgetCategory(Budget budget,
+                                             BudgetDto budgetDto) {
+            if (budgetDto.getBudgetType().equals(BudgetType.EXPENSE))
+                budget.setExpenseCategory(budgetDto.getExpenseCategory());
+            else
+                budget.setIncomeCategory(budgetDto.getIncomeCategory());
         }
     }
 }
