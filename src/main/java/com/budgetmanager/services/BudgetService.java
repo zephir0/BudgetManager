@@ -1,9 +1,7 @@
 package com.budgetmanager.services;
 
 import com.budgetmanager.DTOs.BudgetDto;
-import com.budgetmanager.entities.Budget;
-import com.budgetmanager.entities.BudgetType;
-import com.budgetmanager.entities.User;
+import com.budgetmanager.entities.*;
 import com.budgetmanager.exceptions.WrongEnumException;
 import com.budgetmanager.repositories.BudgetRepository;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -48,7 +46,7 @@ public class BudgetService {
 
 
     public List<Budget> showAllBudget() {
-        return new ArrayList<>(budgetRepository.findAllByUserId(userService.getLoggedUserId()));
+        return new ArrayList<>(budgetRepository.findAllByUserId(getLoggedUserId()));
     }
 
 
@@ -64,6 +62,14 @@ public class BudgetService {
     public Long getLoggedUserId() {
         User user = userService.getLoggedUser().orElseThrow(() -> new RuntimeException("User not found / Not authorized"));
         return user.getId();
+    }
+
+    public List<Budget> findAllBudgetsByExpenseCategory(ExpenseCategory expenseCategory) {
+        return budgetRepository.findAllByExpenseCategoryAndUserId(expenseCategory, getLoggedUserId());
+    }
+
+    public List<Budget> findAllBudgetsByIncomeCategory(IncomeCategory incomeCategory) {
+        return budgetRepository.findAllByIncomeCategoryAndUserId(incomeCategory, getLoggedUserId());
     }
 
     public int countAllBudgetValue() {

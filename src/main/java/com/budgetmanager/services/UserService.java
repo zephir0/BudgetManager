@@ -27,10 +27,15 @@ public class UserService {
         return userRepository.findUserById(id);
     }
 
+    public Optional<User> findUserByLogin(String login) {
+        return userRepository.findByLogin(login);
+    }
+
     public Optional<User> getLoggedUser() {
         String loggedUserLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByLogin(loggedUserLogin);
     }
+
     public List<User> findAllUsers() {
         return new ArrayList<>(userRepository.findAll());
     }

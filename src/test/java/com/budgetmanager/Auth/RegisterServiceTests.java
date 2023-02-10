@@ -2,9 +2,8 @@ package com.budgetmanager.Auth;
 
 import com.budgetmanager.DTOs.UserRegisterMapper;
 import com.budgetmanager.entities.User;
-import com.budgetmanager.entities.UserRole;
+import com.budgetmanager.entities.UserRoles;
 import com.budgetmanager.exceptions.UserAlreadyExistException;
-import com.budgetmanager.repositories.RoleRepository;
 import com.budgetmanager.repositories.UserRepository;
 import com.budgetmanager.services.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +28,6 @@ public class RegisterServiceTests {
     private RoleRepository roleRepository;
 
     private User user;
-    private UserRole userRole;
 
     @BeforeEach
     void setUp() {
@@ -38,9 +36,7 @@ public class RegisterServiceTests {
         user.setLogin("admin");
         user.setPassword("admin");
 
-        userRole = new UserRole();
-        userRole.setId(1L);
-        userRole.setDescription("ADMIN");
+        user.setRole(UserRoles.ADMIN);
     }
 
     @Test
@@ -58,8 +54,8 @@ public class RegisterServiceTests {
 
     @Test
     public void shouldAddRoleToUser() {
-        when(roleRepository.findByDescription("ADMIN")).thenReturn(Optional.of(userRole));
+        when(UserRoles.ADMIN);
         registrationService.addRoleToUser(user);
-        assertEquals("ADMIN", user.getUserRole().getDescription());
+        assertEquals("ADMIN", user.getRole().name());
     }
 }

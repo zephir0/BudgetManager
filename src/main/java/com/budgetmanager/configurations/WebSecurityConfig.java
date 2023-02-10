@@ -1,5 +1,6 @@
 package com.budgetmanager.configurations;
 
+import com.budgetmanager.entities.UserRoles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,16 +19,15 @@ public class WebSecurityConfig {
     public SecurityFilterChain configuration(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/admin").hasRole("ADMIN")
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
-                .and()
-                .authorizeRequests()
-                .antMatchers("/auth/api/**")
+                .antMatchers("/auth/api/")
                 .permitAll()
+                .antMatchers("/api/")
+                .hasAnyRole(UserRoles.USER.name(), UserRoles.ADMIN.name())
+                .antMatchers("/admin/panel**")
+                .hasRole(UserRoles.ADMIN.name())
                 .anyRequest()
-                .authenticated().and().build();
+                .permitAll()
+                .and().build();
     }
 
     @Bean

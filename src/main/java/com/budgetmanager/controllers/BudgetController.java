@@ -2,6 +2,8 @@ package com.budgetmanager.controllers;
 
 import com.budgetmanager.DTOs.BudgetDto;
 import com.budgetmanager.entities.Budget;
+import com.budgetmanager.entities.ExpenseCategory;
+import com.budgetmanager.entities.IncomeCategory;
 import com.budgetmanager.services.BudgetService;
 import com.budgetmanager.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,6 @@ public class BudgetController {
     ResponseEntity<String> deleteBudget(@PathVariable("id") Long id) {
         budgetService.deleteByBudgetId(id);
         return new ResponseEntity<>("Budget deleted", HttpStatus.OK);
-
     }
 
     @DeleteMapping()
@@ -51,10 +52,14 @@ public class BudgetController {
         return new ResponseEntity<>("All budgets deleted", HttpStatus.OK);
     }
 
-    @GetMapping()
-    ResponseEntity<Long> printLoggedUserId() {
-        Long loggedUserId = userService.getLoggedUserId();
-        return new ResponseEntity<>(loggedUserId, HttpStatus.OK);
+    @GetMapping("/EXPENSE/findAll/{expenseCategory}")
+    List<Budget> findAllByExpenseCategory(@PathVariable("expenseCategory") ExpenseCategory expenseCategory) {
+        return budgetService.findAllBudgetsByExpenseCategory(expenseCategory);
+    }
+
+    @GetMapping("/INCOME/findAll/{incomeCategory}")
+    List<Budget> findAllByIncomeCategory(@PathVariable("incomeCategory") IncomeCategory incomeCategory) {
+        return budgetService.findAllBudgetsByIncomeCategory(incomeCategory);
     }
 
 

@@ -2,8 +2,8 @@ package com.budgetmanager.services;
 
 import com.budgetmanager.DTOs.UserRegisterDto;
 import com.budgetmanager.entities.User;
+import com.budgetmanager.entities.UserRoles;
 import com.budgetmanager.exceptions.UserAlreadyExistException;
-import com.budgetmanager.repositories.RoleRepository;
 import com.budgetmanager.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,14 +12,11 @@ import org.springframework.stereotype.Service;
 public class RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
 
     public RegistrationService(UserRepository userRepository,
-                               PasswordEncoder passwordEncoder,
-                               RoleRepository roleRepository) {
+                               PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
     }
 
     public void registerUser(UserRegisterDto userRegisterDto) {
@@ -45,7 +42,7 @@ public class RegistrationService {
     }
 
     public void addRoleToUser(User user) {
-        user.setUserRole(roleRepository.findByDescription("ADMIN").get());
+        user.setRole(UserRoles.ADMIN);
     }
 
 

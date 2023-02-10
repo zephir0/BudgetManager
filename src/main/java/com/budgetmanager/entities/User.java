@@ -1,6 +1,5 @@
 package com.budgetmanager.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -13,10 +12,8 @@ import java.util.Set;
 @Cacheable(cacheNames = "users")
 @Table(name = "user")
 public class User {
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    @JsonBackReference
-    UserRole userRole;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -26,6 +23,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rolename", nullable = false)
+    private UserRoles role;
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Ticket> tickets;
@@ -38,13 +38,12 @@ public class User {
     @JsonManagedReference
     private Collection<Budget> budget;
 
-
-    public UserRole getUserRole() {
-        return userRole;
+    public UserRoles getRole() {
+        return role;
     }
 
-    public void setUserRole(UserRole userRoleId) {
-        this.userRole = userRoleId;
+    public void setRole(UserRoles role) {
+        this.role = role;
     }
 
     public Long getId() {

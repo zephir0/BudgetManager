@@ -15,16 +15,15 @@ import java.util.List;
 
 @EnableCaching
 public interface ChatRepository extends CrudRepository<ChatMessage, Long> {
-    @Cacheable(cacheNames = "budgets")
     List<ChatMessage> findByTicket(Ticket ticket);
 
-    @Cacheable(cacheNames = "budgets")
+
     List<ChatMessage> findAllByTicketId(Long ticketId);
 
-    @Cacheable(cacheNames = "budgets")
+
     List<ChatMessage> findAllByUserAndTicketId(User user,
                                                Long ticket);
 
-    @CacheEvict(cacheNames = "budgets", allEntries = true, beforeInvocation = true)
+
     void deleteByTicketId(Long ticketId);
 }
