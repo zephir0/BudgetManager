@@ -1,14 +1,10 @@
 package com.budgetmanager.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.cache.annotation.Cacheable;
 
-
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -16,10 +12,8 @@ import java.util.Set;
 @Cacheable(cacheNames = "users")
 @Table(name = "user")
 public class User {
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    @JsonBackReference
-    UserRole userRoleId;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -29,23 +23,47 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rolename", nullable = false)
+    private UserRoles role;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<Ticket> tickets;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<ChatMessage> messages;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Collection<Budget> budget;
 
-
-
-    public UserRole getUserRoleId() {
-        return userRoleId;
+    public UserRoles getRole() {
+        return role;
     }
 
-    public void setUserRoleId(UserRole userRoleId) {
-        this.userRoleId = userRoleId;
+    public void setRole(UserRoles role) {
+        this.role = role;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Collection<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(Set<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
+    public Collection<ChatMessage> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<ChatMessage> messages) {
+        this.messages = messages;
     }
 
     public void setId(Long id) {

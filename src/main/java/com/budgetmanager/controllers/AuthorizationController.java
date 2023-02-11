@@ -2,6 +2,7 @@ package com.budgetmanager.controllers;
 
 import com.budgetmanager.DTOs.UserLoginDto;
 import com.budgetmanager.DTOs.UserRegisterDto;
+import com.budgetmanager.exceptions.UserAlreadyExistException;
 import com.budgetmanager.services.RegistrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +46,13 @@ public class AuthorizationController {
 
     @PostMapping("/register")
     ResponseEntity<String> registerUser(@RequestBody UserRegisterDto userRegisterDto) {
-        registrationService.registerUser(userRegisterDto);
-        return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+        try {
+            registrationService.registerUser(userRegisterDto);
+            return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+        } catch (UserAlreadyExistException e) {
+            return new ResponseEntity<>("User already exist in database", HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
     @PostMapping("/logout")

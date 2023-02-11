@@ -2,6 +2,8 @@ package com.budgetmanager.controllers;
 
 import com.budgetmanager.entities.Budget;
 import com.budgetmanager.entities.User;
+import com.budgetmanager.entities.UserRoles;
+import com.budgetmanager.exceptions.NotAuthorizedException;
 import com.budgetmanager.services.BudgetService;
 import com.budgetmanager.services.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/admin/panel")
 public class AdminController {
     private final BudgetService budgetService;
     private final UserService userService;
@@ -36,7 +38,12 @@ public class AdminController {
 
     @GetMapping("/user/findAll")
     public List<User> findAllUsers() {
-        return userService.findAllUsers();
+        User user = userService.getLoggedUser().get();
+        if (user.getRole().equals(UserRoles.ADMIN)) {
+            return userService.findAllUsers();
+        } else {
+            throw new NotAuthorizedException("You are not admin");
+        }
     }
 
 

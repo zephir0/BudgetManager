@@ -1,0 +1,3 @@
+com\budgetmanager\Budget\BudgetRepositoryTests.class
+com\budgetmanager\Auth\RegistrationServiceTests.class
+com\budgetmanager\User\UserRepositoryTests.class

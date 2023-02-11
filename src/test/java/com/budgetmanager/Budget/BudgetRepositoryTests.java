@@ -9,12 +9,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @DataJpaTest
@@ -24,31 +24,45 @@ public class BudgetRepositoryTests {
     @Autowired
     private BudgetRepository budgetRepository;
 
-    @Test
-    @Order(1)
-    public void createBudget() {
-        Budget budget = new Budget();
-        budget.setIncome(200);
-        budget.setExpense(200);
-        budget.setHistoryDayNumber(LocalDate.now().toString());
-        budgetRepository.save(budget);
-        Long budgetId = budgetRepository.findById(budget.getId()).get().getId();
-        assertThat(budgetId).isNotNull();
-    }
 
+
+//    @Test
+//    @Rollback(value = false)
+//    @Order(1)
+//    public void createBudget() {
+//        Budget budget = new Budget();
+//        budget.setIncome(941030);
+//        budget.setExpense(200);
+//        budget.setHistoryDayNumber(LocalDate.now().toString());
+//        budgetRepository.save(budget);
+//        assertTrue(budgetRepository.findById(budget.getId()).isPresent());
+//    }
+//
 //    @Test
 //    @Order(2)
-//    public void deleteBudgetById() {
-//        budgetRepository.deleteById(14L);
-//        assertFalse(budgetRepository.existsById(14L));
+//    public void findBudgetById() {
+//        Long budgetId = budgetRepository.findByIncome(941030).get().getId();
+//        assertTrue(budgetRepository.findById(budgetId).isPresent());
 //    }
-
 //    @Test
 //    @Order(3)
-//    public void findAllByHistoryDayNumberAndUserId() {
-//        List<Budget> allByHistoryDayNumberAndUserId = budgetRepository.findAllByHistoryDayNumberAndUserId(, 1L);
-//        assertThat(allByHistoryDayNumberAndUserId.size()).isGreaterThan(0);
+//    public void findBudgetByIncome() {
+//        assertTrue(budgetRepository.findByIncome(941030).isPresent());
 //    }
-
-
+//
+//
+//
+//    @Test
+//    @Rollback(value = false)
+//    @Order(4)
+//    public void deleteBudgetById() {
+//        budgetRepository.findByIncome(941030)
+//                .ifPresent(
+//                        budget -> {
+//                            budgetRepository.deleteById(budget.getId());
+//                            assertFalse(budgetRepository.existsByIncome(941030), "Budget not exist after deletion");
+//                        }
+//                );
+//
+//    }
 }

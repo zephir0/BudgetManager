@@ -6,7 +6,6 @@ C:\Users\kryst\IdeaProjects\BudgetManager\src\main\java\com\budgetmanager\config
 C:\Users\kryst\IdeaProjects\BudgetManager\src\main\java\com\budgetmanager\controllers\UserController.java
 C:\Users\kryst\IdeaProjects\BudgetManager\src\main\java\com\budgetmanager\entities\Budget.java
 C:\Users\kryst\IdeaProjects\BudgetManager\src\main\java\com\budgetmanager\entities\User.java
-C:\Users\kryst\IdeaProjects\BudgetManager\src\main\java\com\budgetmanager\entities\UserRoles.java
 C:\Users\kryst\IdeaProjects\BudgetManager\src\main\java\com\budgetmanager\controllers\AuthorizationController.java
 C:\Users\kryst\IdeaProjects\BudgetManager\src\main\java\com\budgetmanager\repositories\RoleRepository.java
 C:\Users\kryst\IdeaProjects\BudgetManager\src\main\java\com\budgetmanager\configurations\CustomUserDetailsManagerConfig.java
