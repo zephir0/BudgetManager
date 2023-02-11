@@ -75,11 +75,12 @@ public class BudgetService {
     public int countAllBudgetValue() {
         int expenses = 0;
         int incomes = 0;
-        for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.EXPENSE)) {
-            expenses += budget.getValue();
-        }
+
         for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.INCOME)) {
             incomes += budget.getValue();
+        }
+        for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.EXPENSE)) {
+            expenses -= budget.getValue();
         }
 
         return incomes - expenses;
