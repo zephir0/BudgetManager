@@ -2,10 +2,11 @@ package com.budgetmanager.controllers;
 
 import com.budgetmanager.entities.Budget;
 import com.budgetmanager.entities.User;
-import com.budgetmanager.entities.UserRoles;
 import com.budgetmanager.exceptions.NotAuthorizedException;
 import com.budgetmanager.services.BudgetService;
 import com.budgetmanager.services.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,17 +33,20 @@ public class AdminController {
     }
 
     @GetMapping("/user/find/{id}")
-    public Optional<User> findUserById(@PathVariable("id") Long id) {
-        return userService.findUserById(id);
+    public ResponseEntity<Optional<User>> findUserById(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok(userService.findUserById(id));
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 
     @GetMapping("/user/findAll")
-    public List<User> findAllUsers() {
-        User user = userService.getLoggedUser().get();
-        if (user.getRole().equals(UserRoles.ADMIN)) {
-            return userService.findAllUsers();
-        } else {
-            throw new NotAuthorizedException("You are not admin");
+    public ResponseEntity<List<User>> findAllUsers() {
+        try {
+            return ResponseEntity.ok(userService.findAllUsers());
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 

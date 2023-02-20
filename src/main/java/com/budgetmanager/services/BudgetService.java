@@ -2,9 +2,7 @@ package com.budgetmanager.services;
 
 import com.budgetmanager.DTOs.BudgetDto;
 import com.budgetmanager.entities.*;
-import com.budgetmanager.exceptions.WrongEnumException;
 import com.budgetmanager.repositories.BudgetRepository;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +22,11 @@ public class BudgetService {
         this.userService = userService;
     }
 
-
     public void addBudget(BudgetDto budgetdto) {
-        try {
-            Budget budget = BudgetMapper.map(budgetdto, userService.getLoggedUser().get());
-            budgetRepository.save(budget);
-        } catch (HttpMessageNotReadableException e) {
-            throw new WrongEnumException("Wrong enum value");
-        }
-
+        Budget budget = BudgetMapper.map(budgetdto, userService.getLoggedUser());
+        budgetRepository.save(budget);
     }
+
 
     public void changeBudget(Long id,
                              BudgetDto budgetDto) {
@@ -44,11 +37,9 @@ public class BudgetService {
         });
     }
 
-
     public List<Budget> showAllBudget() {
         return new ArrayList<>(budgetRepository.findAllByUserId(getLoggedUserId()));
     }
-
 
     public void deleteByBudgetId(Long id) {
         budgetRepository.deleteById(id);
@@ -59,10 +50,6 @@ public class BudgetService {
         budgetRepository.deleteAllByUserId(id);
     }
 
-    public Long getLoggedUserId() {
-        User user = userService.getLoggedUser().orElseThrow(() -> new RuntimeException("User not found / Not authorized"));
-        return user.getId();
-    }
 
     public List<Budget> findAllBudgetsByExpenseCategory(ExpenseCategory expenseCategory) {
         return budgetRepository.findAllByExpenseCategoryAndUserId(expenseCategory, getLoggedUserId());
@@ -72,17 +59,19 @@ public class BudgetService {
         return budgetRepository.findAllByIncomeCategoryAndUserId(incomeCategory, getLoggedUserId());
     }
 
+    public Long getLoggedUserId() {
+        return userService.getLoggedUser().getId();
+    }
+
     public int countAllBudgetValue() {
         int expenses = 0;
         int incomes = 0;
-
         for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.INCOME)) {
             incomes += budget.getValue();
         }
         for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.EXPENSE)) {
             expenses -= budget.getValue();
         }
-
         return incomes - expenses;
     }
 
@@ -116,8 +105,7 @@ public class BudgetService {
                                              BudgetDto budgetDto) {
             if (budgetDto.getBudgetType().equals(BudgetType.EXPENSE))
                 budget.setExpenseCategory(budgetDto.getExpenseCategory());
-            else
-                budget.setIncomeCategory(budgetDto.getIncomeCategory());
+            else budget.setIncomeCategory(budgetDto.getIncomeCategory());
         }
     }
 }

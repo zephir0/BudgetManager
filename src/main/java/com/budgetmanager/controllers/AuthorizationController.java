@@ -6,6 +6,7 @@ import com.budgetmanager.exceptions.UserAlreadyExistException;
 import com.budgetmanager.services.RegistrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,7 +38,6 @@ public class AuthorizationController {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getLogin(), loginDto.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
             return new ResponseEntity<>("Username signed successfully", HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>("Authentication failed", HttpStatus.UNAUTHORIZED);
@@ -59,11 +59,14 @@ public class AuthorizationController {
     ResponseEntity<String> logoutUser(HttpServletRequest request,
                                       HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return new ResponseEntity<>("You cannot log out a user who is not currently logged in", HttpStatus.UNAUTHORIZED);
+        } else {
             SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
             securityContextLogoutHandler.logout(request, response, authentication);
             return new ResponseEntity<>("User logged out.", HttpStatus.OK);
-        } else return new ResponseEntity<>("User cannot log out", HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
 

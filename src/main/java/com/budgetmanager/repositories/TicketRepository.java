@@ -16,8 +16,8 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     @Cacheable(cacheNames = "budgets")
     List<Ticket> findAllByUser(User user);
 
-    List<Ticket> findAllByUserId(Long userId);
-
+    @Cacheable(cacheNames = "budgets")
+    List<Ticket> findAll();
 
     @CacheEvict(cacheNames = "budgets", allEntries = true, beforeInvocation = true)
     @Override

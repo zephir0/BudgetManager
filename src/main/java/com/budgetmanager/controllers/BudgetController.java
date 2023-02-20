@@ -7,7 +7,6 @@ import com.budgetmanager.entities.IncomeCategory;
 import com.budgetmanager.services.BudgetService;
 import com.budgetmanager.services.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +24,13 @@ public class BudgetController {
         this.userService = userService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping()
     ResponseEntity<String> addBudget(@RequestBody
                                      BudgetDto budgetDto) {
         budgetService.addBudget(budgetDto);
         return new ResponseEntity<>("Budget item added", HttpStatus.CREATED);
     }
+
 
     @PutMapping("{id}")
     ResponseEntity<String> changeBudget(@RequestBody BudgetDto budgetDto,
@@ -47,8 +47,8 @@ public class BudgetController {
 
     @DeleteMapping()
     ResponseEntity<String> deleteAllBudgets() {
-        System.out.println("USER ID : " + userService.getLoggedUserId());
-        budgetService.deleteAllBudgetsByUserId(userService.getLoggedUserId());
+        System.out.println("USER ID : " + userService.getLoggedUser().getId());
+        budgetService.deleteAllBudgetsByUserId(userService.getLoggedUser().getId());
         return new ResponseEntity<>("All budgets deleted", HttpStatus.OK);
     }
 
@@ -70,7 +70,7 @@ public class BudgetController {
 
     @GetMapping("/findAll/{dayNumber}")
     List<Budget> findBudgetByHistoryDayNumberAndUserId(@PathVariable("dayNumber") String day) {
-        return budgetService.showBudgetByHistoryDayNumberAndUserId(day, userService.getLoggedUserId());
+        return budgetService.showBudgetByHistoryDayNumberAndUserId(day, userService.getLoggedUser().getId());
     }
 
     @GetMapping("/count/total")

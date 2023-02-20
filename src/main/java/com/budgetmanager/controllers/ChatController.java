@@ -2,6 +2,10 @@ package com.budgetmanager.controllers;
 
 import com.budgetmanager.DTOs.ChatMessageDto;
 import com.budgetmanager.entities.ChatMessage;
+import com.budgetmanager.exceptions.MessageDoesntExistException;
+import com.budgetmanager.exceptions.NotAuthorizedException;
+import com.budgetmanager.exceptions.TicketDoesntExistException;
+import com.budgetmanager.exceptions.UserNotLoggedInException;
 import com.budgetmanager.services.ChatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,19 +25,37 @@ public class ChatController {
     @PostMapping("/{ticketId}")
     ResponseEntity<String> sendMessage(@PathVariable("ticketId") Long ticketId,
                                        @RequestBody ChatMessageDto messageDto) {
-        chatService.addMessage(ticketId, messageDto);
-        return new ResponseEntity<>("message sent", HttpStatus.OK);
+        try {
+            chatService.addMessage(ticketId, messageDto);
+            return new ResponseEntity<>("Message sent", HttpStatus.OK);
+        } catch (UserNotLoggedInException e) {
+            return new ResponseEntity<>("You are not logged in.", HttpStatus.NOT_FOUND);
+        } catch (TicketDoesntExistException e) {
+            return new ResponseEntity<>("Ticket doesn't exist", HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @GetMapping("/{ticketId}")
-    List<ChatMessage> getMessagesByTicketId(@PathVariable("ticketId") Long ticketId) {
-        return chatService.messageList(ticketId);
+    ResponseEntity<List<ChatMessage>> getMessagesByTicketId(@PathVariable("ticketId") Long ticketId) {
+        try {
+            return ResponseEntity.ok(chatService.messageList(ticketId));
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        } catch (TicketDoesntExistException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @DeleteMapping("/{messageId}")
     ResponseEntity<String> deleteMessage(@PathVariable("messageId") Long messageId) {
-        chatService.deleteMessage(messageId);
-        return new ResponseEntity<>("message deleted", HttpStatus.OK);
+        try {
+            chatService.deleteMessage(messageId);
+            return new ResponseEntity<>("Message deleted", HttpStatus.OK);
+        } catch (MessageDoesntExistException e) {
+            return new ResponseEntity<>("You cannot delete message that doesn't exist", HttpStatus.OK);
+        }
+
     }
 
 }

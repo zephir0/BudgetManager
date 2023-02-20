@@ -40,8 +40,5 @@ public class CustomUserDetailsManagerConfig implements UserDetailsService {
                 .build();
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 }

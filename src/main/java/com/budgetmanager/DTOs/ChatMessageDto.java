@@ -3,6 +3,7 @@ package com.budgetmanager.DTOs;
 import com.budgetmanager.entities.ChatMessage;
 import com.budgetmanager.entities.Ticket;
 import com.budgetmanager.entities.User;
+import com.budgetmanager.entities.UserRoles;
 
 import java.time.LocalDateTime;
 
@@ -23,10 +24,8 @@ public class ChatMessageDto {
                                   ChatMessageDto chatMessageDto,
                                   User user) {
         ChatMessage chatMessage = new ChatMessage();
-        //TO CHANGE
-        chatMessage.setAdmin(true);
+        chatMessage.setAdmin(user.getRole().equals(UserRoles.ADMIN));
         chatMessage.setTicket(ticket);
-        //
         chatMessage.setUser(user);
         chatMessage.setMessage(chatMessageDto.getMessage());
         chatMessage.setCreatedAt(LocalDateTime.now().toString());

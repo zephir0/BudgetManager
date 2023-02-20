@@ -27,6 +27,12 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Cacheable(cacheNames = "users")
     List<User> findAll();
 
+
+    @CacheEvict(cacheNames = "users", allEntries = true)
+    @Override
+    <S extends User> S save(S entity);
+
+    @Cacheable(cacheNames = "users")
     boolean existsByLogin(String login);
 
 }

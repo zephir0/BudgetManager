@@ -2,10 +2,10 @@ package com.budgetmanager.services;
 
 import com.budgetmanager.DTOs.ChatMessageDto;
 import com.budgetmanager.entities.ChatMessage;
+import com.budgetmanager.entities.UserRoles;
 import com.budgetmanager.exceptions.MessageDoesntExistException;
+import com.budgetmanager.exceptions.NotAuthorizedException;
 import com.budgetmanager.exceptions.TicketDoesntExistException;
-import com.budgetmanager.exceptions.TicketIsEmptyException;
-import com.budgetmanager.exceptions.UserDoesntExistException;
 import com.budgetmanager.repositories.ChatRepository;
 import com.budgetmanager.repositories.TicketRepository;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,11 @@ public class ChatService {
 
     public void addMessage(Long ticketId,
                            ChatMessageDto chatMessageDto) {
-        ChatMessage chatMessage = ChatMessageDto.map(ticketRepository.findById(ticketId).orElseThrow(() -> new TicketDoesntExistException("TICKET DOESNT EXIST")), chatMessageDto, userService.getLoggedUser().orElseThrow(() -> new UserDoesntExistException("USER DOESN'T EXIST.")));
+        ChatMessage chatMessage = ChatMessageDto
+                .map(ticketRepository.findById(ticketId)
+                        .orElseThrow(
+                                () -> new TicketDoesntExistException("Ticket doesn't exist")), chatMessageDto, userService.getLoggedUser()
+                );
         chatRepository.save(chatMessage);
     }
 
@@ -38,19 +42,21 @@ public class ChatService {
         List<ChatMessage> messages = chatRepository.findAllByTicketId(ticketId);
         if (messages != null && !messages.isEmpty()) {
             chatRepository.deleteAll(messages);
-        } else {
-            throw new TicketIsEmptyException("Messages doesn't exist");
         }
     }
 
     public List<ChatMessage> messageList(Long ticketId) {
-        return chatRepository.findAllByUserAndTicketId(userService.getLoggedUser().orElseThrow(() -> new UserDoesntExistException("USER DOESN'T EXIST")), ticketId);
+        return ticketRepository.findById(ticketId).map(ticket -> {
+            if (!ticket.getUser().equals(userService.getLoggedUser()) || !userService.getLoggedUser().getRole().equals(UserRoles.ADMIN)) {
+                throw new NotAuthorizedException("You are not authorized to see that ticket messages");
+            } else
+                return chatRepository.findAllByTicketId(ticketId);
+        }).orElseThrow(() -> new TicketDoesntExistException("Ticket doesn't exist"));
     }
 
     @Transactional
     public void deleteMessage(Long messageId) {
-        ChatMessage message = chatRepository.findById(messageId)
-                .orElseThrow(() -> new MessageDoesntExistException("Message doesn't exist"));
+        ChatMessage message = chatRepository.findById(messageId).orElseThrow(() -> new MessageDoesntExistException("Message doesn't exist"));
         chatRepository.delete(message);
     }
 }

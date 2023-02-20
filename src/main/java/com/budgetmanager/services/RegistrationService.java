@@ -21,16 +21,14 @@ public class RegistrationService {
 
     public void registerUser(UserRegisterDto userRegisterDto) {
         if (checkIfUserExist(userRegisterDto.getLogin()))
-            throw new UserAlreadyExistException("User already exist in database");
+            throw new UserAlreadyExistException("User with that login already exist in database");
         else {
-            User mappedUser = map(userRegisterDto);
-            userRepository.save(mappedUser);
+            userRepository.save(map(userRegisterDto));
         }
-
     }
 
     public boolean checkIfUserExist(String login) {
-        return userRepository.findByLogin(login).isPresent();
+        return userRepository.existsByLogin(login);
     }
 
     public User map(UserRegisterDto userRegisterDto) {
@@ -42,7 +40,7 @@ public class RegistrationService {
     }
 
     public void addRoleToUser(User user) {
-        user.setRole(UserRoles.ADMIN);
+        user.setRole(UserRoles.USER);
     }
 
 
