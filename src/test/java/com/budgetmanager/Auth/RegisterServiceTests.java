@@ -1,11 +1,11 @@
 package com.budgetmanager.Auth;
 
-import com.budgetmanager.DTOs.UserRegisterMapper;
-import com.budgetmanager.entities.User;
-import com.budgetmanager.entities.UserRoles;
-import com.budgetmanager.exceptions.UserAlreadyExistException;
-import com.budgetmanager.repositories.UserRepository;
-import com.budgetmanager.services.RegistrationService;
+import com.budgetmanager.user.dtos.UserRegisterMapper;
+import com.budgetmanager.user.entities.User;
+import com.budgetmanager.user.entities.UserRoles;
+import com.budgetmanager.user.exceptions.UserAlreadyExistException;
+import com.budgetmanager.user.UserRepository;
+import com.budgetmanager.user.services.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,7 @@ public class RegisterServiceTests {
     private RegistrationService registrationService;
     @MockBean
     private UserRepository userRepository;
-    @MockBean
-    private RoleRepository roleRepository;
+
 
     private User user;
 

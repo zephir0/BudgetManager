@@ -1,6 +1,6 @@
 package com.budgetmanager.configurations;
 
-import com.budgetmanager.entities.UserRoles;
+import com.budgetmanager.user.entities.UserRoles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
