@@ -20,18 +20,6 @@ public class ChatMessageDto {
         this.isAdmin = isAdmin;
     }
 
-    public static ChatMessage map(Ticket ticket,
-                                  ChatMessageDto chatMessageDto,
-                                  User user) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setAdmin(user.getRole().equals(UserRoles.ADMIN));
-        chatMessage.setTicket(ticket);
-        chatMessage.setUser(user);
-        chatMessage.setMessage(chatMessageDto.getMessage());
-        chatMessage.setCreatedAt(LocalDateTime.now().toString());
-        return chatMessage;
-    }
-
 
     public String getMessage() {
         return message;
