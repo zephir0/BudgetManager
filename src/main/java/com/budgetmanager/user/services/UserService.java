@@ -4,7 +4,7 @@ import com.budgetmanager.user.dtos.UserLoginChangeDto;
 import com.budgetmanager.user.dtos.UserPasswordChangeDto;
 import com.budgetmanager.user.UserRepository;
 import com.budgetmanager.user.dtos.UserLoginDto;
-import com.budgetmanager.user.dtos.UserLoginDtoMapper;
+import com.budgetmanager.user.mappers.UserLoginDtoMapper;
 import com.budgetmanager.user.entities.User;
 import com.budgetmanager.user.entities.UserRoles;
 import com.budgetmanager.user.exceptions.IncorrectOldPasswordException;

@@ -5,6 +5,7 @@ import com.budgetmanager.ticket.TicketRepository;
 import com.budgetmanager.ticket.dto.TicketDto;
 import com.budgetmanager.ticket.entity.Ticket;
 import com.budgetmanager.ticket.exceptions.TicketDoesntExistException;
+import com.budgetmanager.ticket.mapper.TicketMapper;
 import com.budgetmanager.user.entities.UserRoles;
 import com.budgetmanager.user.exceptions.NotAuthorizedException;
 import com.budgetmanager.user.services.UserService;
@@ -28,7 +29,7 @@ public class TicketService {
     }
 
     public void createTicket(TicketDto ticketDto) {
-        ticketRepository.save(TicketDto.map(userService.getLoggedUser(), ticketDto));
+        ticketRepository.save(TicketMapper.map(userService.getLoggedUser(), ticketDto));
     }
 
     public List<Ticket> showAllTickets() {

@@ -1,13 +1,14 @@
 package com.budgetmanager.chat.service;
 
 import com.budgetmanager.chat.ChatRepository;
-import com.budgetmanager.chat.exception.MessageDoesntExistException;
 import com.budgetmanager.chat.dto.ChatMessageDto;
 import com.budgetmanager.chat.entity.ChatMessage;
+import com.budgetmanager.chat.exception.MessageDoesntExistException;
+import com.budgetmanager.chat.mapper.ChatMessageMapper;
+import com.budgetmanager.ticket.TicketRepository;
+import com.budgetmanager.ticket.exceptions.TicketDoesntExistException;
 import com.budgetmanager.user.entities.UserRoles;
 import com.budgetmanager.user.exceptions.NotAuthorizedException;
-import com.budgetmanager.ticket.exceptions.TicketDoesntExistException;
-import com.budgetmanager.ticket.TicketRepository;
 import com.budgetmanager.user.services.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class ChatService {
 
     public void addMessage(Long ticketId,
                            ChatMessageDto chatMessageDto) {
-        ChatMessage chatMessage = ChatMessageDto
+        ChatMessage chatMessage = ChatMessageMapper
                 .map(ticketRepository.findById(ticketId)
                         .orElseThrow(
                                 () -> new TicketDoesntExistException("Ticket doesn't exist")), chatMessageDto, userService.getLoggedUser()

@@ -23,14 +23,4 @@ public class TicketDto {
         return message;
     }
 
-    public static Ticket map(User user,
-                             TicketDto ticketDto) {
-        Ticket ticket = new Ticket();
-        ticket.setUser(user);
-        ticket.setSubject(ticketDto.getSubject());
-        ticket.setMessage(ticketDto.getMessage());
-        ticket.setCreatedAt(LocalDateTime.now().toString());
-        ticket.setUpdatedAt(LocalDateTime.now().toString());
-        return ticket;
-    }
 }

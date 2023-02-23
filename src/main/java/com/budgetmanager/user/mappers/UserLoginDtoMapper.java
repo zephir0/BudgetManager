@@ -1,5 +1,6 @@
-package com.budgetmanager.user.dtos;
+package com.budgetmanager.user.mappers;
 
+import com.budgetmanager.user.dtos.UserLoginDto;
 import com.budgetmanager.user.entities.User;
 
 public class UserLoginDtoMapper {

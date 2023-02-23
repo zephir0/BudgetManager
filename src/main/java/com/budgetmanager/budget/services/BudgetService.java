@@ -8,14 +8,13 @@ import com.budgetmanager.budget.entities.ExpenseCategory;
 import com.budgetmanager.budget.entities.IncomeCategory;
 import com.budgetmanager.budget.exceptions.BudgetDoesntExistException;
 import com.budgetmanager.budget.exceptions.EmptyBudgetCategoryException;
+import com.budgetmanager.budget.mapper.BudgetMapper;
 import com.budgetmanager.user.exceptions.NotAuthorizedException;
-import com.budgetmanager.user.entities.User;
 import com.budgetmanager.user.entities.UserRoles;
 import com.budgetmanager.user.services.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -110,23 +109,5 @@ public class BudgetService {
         return budgetRepository.findAllByHistoryDayNumberAndUserId(day, id);
     }
 
-    static class BudgetMapper {
-        static public Budget map(BudgetDto budgetDto,
-                                 User user) {
-            Budget budget = new Budget();
-            budget.setUser(user);
-            budget.setValue(budgetDto.getValue());
-            setBudgetCategory(budget, budgetDto);
-            budget.setBudgetType(budgetDto.getBudgetType());
-            budget.setHistoryDayNumber(LocalDate.now().toString());
-            return budget;
-        }
 
-        static public void setBudgetCategory(Budget budget,
-                                             BudgetDto budgetDto) {
-            if (budgetDto.getBudgetType().equals(BudgetType.EXPENSE))
-                budget.setExpenseCategory(budgetDto.getExpenseCategory());
-            else budget.setIncomeCategory(budgetDto.getIncomeCategory());
-        }
-    }
 }
