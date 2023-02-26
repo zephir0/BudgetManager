@@ -17,17 +17,16 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain configuration(HttpSecurity http) throws Exception {
-        return http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/auth/api/")
-                .permitAll()
-                .antMatchers("/api/")
-                .hasAnyRole(UserRoles.USER.name(), UserRoles.ADMIN.name())
-                .antMatchers("/admin/panel**")
-                .hasRole(UserRoles.ADMIN.name())
-                .anyRequest()
-                .permitAll()
-                .and().build();
+        http.csrf().disable()
+                .authorizeRequests((auth) -> auth
+                        .antMatchers("/api/**")
+                        .authenticated()
+                        .antMatchers("/admin/**")
+                        .hasRole("ADMIN")
+                        .antMatchers("/auth/api**")
+                        .permitAll()
+                );
+        return http.build();
     }
 
     @Bean

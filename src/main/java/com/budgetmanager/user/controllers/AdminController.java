@@ -1,6 +1,7 @@
 package com.budgetmanager.user.controllers;
 
 import com.budgetmanager.budget.entities.Budget;
+import com.budgetmanager.user.exceptions.UserDoesntExistException;
 import com.budgetmanager.user.services.UserService;
 import com.budgetmanager.user.entities.User;
 import com.budgetmanager.user.exceptions.NotAuthorizedException;
@@ -59,7 +60,11 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
+    public ResponseEntity<Optional<User>> findUserById(@PathVariable("id") Long id) throws NotAuthorizedException, UserDoesntExistException {
+
     public ResponseEntity<Optional<User>> findUserById(@PathVariable("id") Long id) throws NotAuthorizedException {
+
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
@@ -73,4 +78,8 @@ public class AdminController {
     public ResponseEntity<List<User>> findAllUsers() throws NotAuthorizedException {
         return ResponseEntity.ok(userService.findAllUsers());
     }
+
 }
+
+}
+

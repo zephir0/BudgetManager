@@ -42,7 +42,11 @@ public class TicketController {
     })
     public ResponseEntity<String> createTicket(@RequestBody TicketDto ticketDto) throws UserNotLoggedInException {
         ticketService.createTicket(ticketDto);
+
+        return new ResponseEntity<>("Ticket has been created", HttpStatus.CREATED);
+
         return new ResponseEntity<>("Ticket has been added", HttpStatus.CREATED);
+
     }
 
     @GetMapping("/findAll")
