@@ -60,7 +60,11 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     public ResponseEntity<Optional<User>> findUserById(@PathVariable("id") Long id) throws NotAuthorizedException, UserDoesntExistException {
+
+    public ResponseEntity<Optional<User>> findUserById(@PathVariable("id") Long id) throws NotAuthorizedException {
+
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
@@ -74,4 +78,8 @@ public class AdminController {
     public ResponseEntity<List<User>> findAllUsers() throws NotAuthorizedException {
         return ResponseEntity.ok(userService.findAllUsers());
     }
+
 }
+
+}
+

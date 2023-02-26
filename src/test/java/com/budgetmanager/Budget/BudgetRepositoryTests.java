@@ -1,62 +1,103 @@
 package com.budgetmanager.Budget;
 
 import com.budgetmanager.budget.BudgetRepository;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import com.budgetmanager.budget.entities.Budget;
+import com.budgetmanager.budget.entities.ExpenseCategory;
+import com.budgetmanager.budget.entities.IncomeCategory;
+import com.budgetmanager.user.entities.User;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(MockitoExtension.class)
 public class BudgetRepositoryTests {
-    @Autowired
+
+
+    @Mock
     private BudgetRepository budgetRepository;
 
+    private User user;
+    private Budget expectedBudget;
+    private List<Budget> expectedBudgetList;
+
+    @BeforeEach
+    void setUp() {
+        user = new User();
+        user.setId(1L);
+        user.setLogin("admin");
+        expectedBudget = new Budget();
+        expectedBudget.setId(1L);
+        expectedBudget.setValue(1000);
+        expectedBudget.setIncomeCategory(IncomeCategory.SALARY);
+        expectedBudget.setUser(user);
+        expectedBudget.setHistoryDayNumber(LocalDate.now().toString());
+
+    }
+
+    @Test
+    public void testFindAllByUserIdAndBudgetType() {
+        when(budgetRepository.findAllByUserIdAndBudgetType(expectedBudget.getUser().getId(), expectedBudget.getBudgetType())).thenReturn(expectedBudgetList);
+        List<Budget> actualBudgetList = budgetRepository.findAllByUserIdAndBudgetType(expectedBudget.getUser().getId(), expectedBudget.getBudgetType());
+        assertEquals(expectedBudgetList, actualBudgetList);
+    }
+
+    @Test
+    public void testFindAllByUserId() {
+        when(budgetRepository.findAllByUserId(expectedBudget.getUser().getId())).thenReturn(expectedBudgetList);
+        List<Budget> actualBudgetList = budgetRepository.findAllByUserId(expectedBudget.getUser().getId());
+        assertEquals(expectedBudgetList, actualBudgetList);
+    }
+
+    @Test
+    public void testFindBudgetById() {
+        when(budgetRepository.findById(expectedBudget.getId())).thenReturn(Optional.of(expectedBudget));
+        Optional<Budget> actualBudget = budgetRepository.findById(expectedBudget.getId());
+        assertEquals(Optional.of(expectedBudget), actualBudget);
+    }
+
+    @Test
+    public void testFindAllByExpenseCategoryAndUserId() {
+        when(budgetRepository.findAllByExpenseCategoryAndUserId(ExpenseCategory.FOOD, expectedBudget.getUser().getId())).thenReturn(expectedBudgetList);
+        List<Budget> actualBudgetList = budgetRepository.findAllByExpenseCategoryAndUserId(ExpenseCategory.FOOD, expectedBudget.getUser().getId());
+        assertEquals(expectedBudgetList, actualBudgetList);
+    }
+
+    @Test
+    public void testFindAllByIncomeCategoryAndUserId() {
+        when(budgetRepository.findAllByIncomeCategoryAndUserId(IncomeCategory.SALARY, expectedBudget.getUser().getId())).thenReturn(expectedBudgetList);
+        List<Budget> actualBudgetList = budgetRepository.findAllByIncomeCategoryAndUserId(IncomeCategory.SALARY, expectedBudget.getUser().getId());
+        assertEquals(expectedBudgetList, actualBudgetList);
+    }
+
+    @Test
+    public void testFindAllByHistoryDayNumberAndUserId() {
+        when(budgetRepository.findAllByHistoryDayNumberAndUserId(expectedBudget.getHistoryDayNumber(), expectedBudget.getUser().getId())).thenReturn(expectedBudgetList);
+        List<Budget> actualBudgetList = budgetRepository.findAllByHistoryDayNumberAndUserId(expectedBudget.getHistoryDayNumber(), expectedBudget.getUser().getId());
+        assertEquals(expectedBudgetList, actualBudgetList);
+    }
+
+    @Test
+    public void testDelete() {
+        budgetRepository.delete(expectedBudget);
+        verify(budgetRepository).delete(expectedBudget);
+    }
+
+    @Test
+    public void testDeleteAllByUserId() {
+        budgetRepository.deleteAllByUserId(expectedBudget.getUser().getId());
+        verify(budgetRepository).deleteAllByUserId(expectedBudget.getUser().getId());
+    }
 
 
-//    @Test
-//    @Rollback(value = false)
-//    @Order(1)
-//    public void createBudget() {
-//        Budget budget = new Budget();
-//        budget.setIncome(941030);
-//        budget.setExpense(200);
-//        budget.setHistoryDayNumber(LocalDate.now().toString());
-//        budgetRepository.save(budget);
-//        assertTrue(budgetRepository.findById(budget.getId()).isPresent());
-//    }
-//
-//    @Test
-//    @Order(2)
-//    public void findBudgetById() {
-//        Long budgetId = budgetRepository.findByIncome(941030).get().getId();
-//        assertTrue(budgetRepository.findById(budgetId).isPresent());
-//    }
-//    @Test
-//    @Order(3)
-//    public void findBudgetByIncome() {
-//        assertTrue(budgetRepository.findByIncome(941030).isPresent());
-//    }
-//
-//
-//
-//    @Test
-//    @Rollback(value = false)
-//    @Order(4)
-//    public void deleteBudgetById() {
-//        budgetRepository.findByIncome(941030)
-//                .ifPresent(
-//                        budget -> {
-//                            budgetRepository.deleteById(budget.getId());
-//                            assertFalse(budgetRepository.existsByIncome(941030), "Budget not exist after deletion");
-//                        }
-//                );
-//
-//    }
 }
+
