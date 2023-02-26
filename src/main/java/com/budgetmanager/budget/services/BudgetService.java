@@ -1,16 +1,18 @@
 package com.budgetmanager.budget.services;
 
-import com.budgetmanager.budget.*;
+import com.budgetmanager.budget.BudgetRepository;
 import com.budgetmanager.budget.dtos.BudgetDto;
 import com.budgetmanager.budget.entities.Budget;
 import com.budgetmanager.budget.entities.BudgetType;
 import com.budgetmanager.budget.entities.ExpenseCategory;
 import com.budgetmanager.budget.entities.IncomeCategory;
 import com.budgetmanager.budget.exceptions.BudgetDoesntExistException;
+import com.budgetmanager.budget.exceptions.BudgetValueNullException;
 import com.budgetmanager.budget.exceptions.EmptyBudgetCategoryException;
+import com.budgetmanager.budget.exceptions.EmptyBudgetTypeException;
 import com.budgetmanager.budget.mapper.BudgetMapper;
-import com.budgetmanager.user.exceptions.NotAuthorizedException;
 import com.budgetmanager.user.entities.UserRoles;
+import com.budgetmanager.user.exceptions.NotAuthorizedException;
 import com.budgetmanager.user.services.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +36,15 @@ public class BudgetService {
     public void addBudget(BudgetDto budgetdto) {
         if (budgetdto.getExpenseCategory() == null && budgetdto.getIncomeCategory() == null) {
             throw new EmptyBudgetCategoryException("You need to insert an income or expense category");
+        } else if (budgetdto.getValue() == 0) {
+            throw new BudgetValueNullException("You need to insert an income or expense category");
+        } else if (budgetdto.getBudgetType() == null) {
+            throw new EmptyBudgetTypeException("You need to insert a budget type");
+        } else {
+            Budget budget = BudgetMapper.map(budgetdto, userService.getLoggedUser());
+            budgetRepository.save(budget);
         }
-        Budget budget = BudgetMapper.map(budgetdto, userService.getLoggedUser());
-        budgetRepository.save(budget);
+
     }
 
 
@@ -44,7 +52,11 @@ public class BudgetService {
                              BudgetDto budgetDto) {
         performBudgetOperation(id, budget -> {
             budget.setValue(budgetDto.getValue());
-            budget.setBudgetType(budgetDto.getBudgetType());
+            if (budget.getBudgetType() == BudgetType.INCOME) {
+                budget.setIncomeCategory(budgetDto.getIncomeCategory());
+            } else if (budget.getBudgetType() == BudgetType.EXPENSE) {
+                budget.setExpenseCategory(budgetDto.getExpenseCategory());
+            }
             budgetRepository.save(budget);
         });
     }
