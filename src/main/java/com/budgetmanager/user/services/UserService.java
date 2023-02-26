@@ -1,15 +1,16 @@
 package com.budgetmanager.user.services;
 
-import com.budgetmanager.user.dtos.UserLoginChangeDto;
-import com.budgetmanager.user.dtos.UserPasswordChangeDto;
 import com.budgetmanager.user.UserRepository;
+import com.budgetmanager.user.dtos.UserLoginChangeDto;
 import com.budgetmanager.user.dtos.UserLoginDto;
-import com.budgetmanager.user.mappers.UserLoginDtoMapper;
+import com.budgetmanager.user.dtos.UserPasswordChangeDto;
 import com.budgetmanager.user.entities.User;
 import com.budgetmanager.user.entities.UserRoles;
 import com.budgetmanager.user.exceptions.IncorrectOldPasswordException;
 import com.budgetmanager.user.exceptions.NotAuthorizedException;
+import com.budgetmanager.user.exceptions.UserDoesntExistException;
 import com.budgetmanager.user.exceptions.UserNotLoggedInException;
+import com.budgetmanager.user.mappers.UserLoginDtoMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,9 @@ public class UserService {
 
     public Optional<User> findUserById(Long id) {
         if (getLoggedUser().getRole().equals(UserRoles.ADMIN)) {
-            return userRepository.findUserById(id);
+            if (userRepository.existsById(id)) {
+                return userRepository.findUserById(id);
+            } else throw new UserDoesntExistException("User doesn't exist");
         } else throw new NotAuthorizedException("You are not admin");
     }
 

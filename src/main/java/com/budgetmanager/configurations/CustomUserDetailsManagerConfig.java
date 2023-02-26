@@ -1,7 +1,6 @@
 package com.budgetmanager.configurations;
 
 import com.budgetmanager.user.dtos.UserLoginDto;
-import com.budgetmanager.user.entities.UserRoles;
 import com.budgetmanager.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,7 @@ public class CustomUserDetailsManagerConfig implements UserDetailsService {
         return User.builder()
                 .username(userLoginDto.getLogin())
                 .password(userLoginDto.getPassword())
-                .roles(UserRoles.USER.name(), UserRoles.ADMIN.name())
+                .roles("ADMIN")
                 .build();
     }
 

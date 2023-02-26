@@ -49,10 +49,10 @@ public class ChatService {
 
     public List<ChatMessage> messageList(Long ticketId) {
         return ticketRepository.findById(ticketId).map(ticket -> {
-            if (!ticket.getUser().equals(userService.getLoggedUser()) || !userService.getLoggedUser().getRole().equals(UserRoles.ADMIN)) {
-                throw new NotAuthorizedException("You are not authorized to see that ticket messages");
-            } else
+            if (ticket.getUser().equals(userService.getLoggedUser()) || userService.getLoggedUser().getRole().equals(UserRoles.ADMIN)) {
                 return chatRepository.findAllByTicketId(ticketId);
+            } else
+                throw new NotAuthorizedException("You are not authorized to see that ticket messages");
         }).orElseThrow(() -> new TicketDoesntExistException("Ticket doesn't exist"));
     }
 
