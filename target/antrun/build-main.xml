@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main">
+  <java fork="true" jar="C:\Users\kryst\.m2\repository\io\github\swagger2markup\swagger2markup-cli\1.3.3\swagger2markup-cli-1.3.3.jar">
+    <arg value="convert"/>
+    <arg value="-i"/>
+    <arg value="https://localhost:8080/v3/api-docs"/>
+    <arg value="-f"/>
+    <arg value="src/main/resources/swagger"/>
+    <arg value="--config"/>
+    <arg value="src/main/resources/swagger.properties"/>
+    <arg value="--outputFile"/>
+    <arg value="swagger"/>
+  </java>
+</target>
+</project>
