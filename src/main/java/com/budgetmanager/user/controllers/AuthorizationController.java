@@ -2,7 +2,6 @@ package com.budgetmanager.user.controllers;
 
 import com.budgetmanager.user.dtos.UserLoginDto;
 import com.budgetmanager.user.dtos.UserRegisterDto;
-import com.budgetmanager.user.exceptions.UserAlreadyExistException;
 import com.budgetmanager.user.services.RegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,7 +13,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +43,7 @@ public class AuthorizationController {
             @ApiResponse(responseCode = "401", description = "Invalid credentials"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    ResponseEntity<String> postLogin(@RequestBody UserLoginDto loginDto) throws AuthenticationException {
+    ResponseEntity<String> postLogin(@RequestBody UserLoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getLogin(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>("Username signed successfully", HttpStatus.OK);
@@ -58,7 +56,7 @@ public class AuthorizationController {
             @ApiResponse(responseCode = "409", description = "User already exists"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    ResponseEntity<String> registerUser(@RequestBody UserRegisterDto userRegisterDto) throws UserAlreadyExistException {
+    ResponseEntity<String> registerUser(@RequestBody UserRegisterDto userRegisterDto) {
         registrationService.registerUser(userRegisterDto);
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
     }
@@ -67,7 +65,7 @@ public class AuthorizationController {
     @Operation(summary = "User logout", description = "Logs out a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Logout successful"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "401", description = "You are not logged in"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     ResponseEntity<String> logoutUser(HttpServletRequest request,

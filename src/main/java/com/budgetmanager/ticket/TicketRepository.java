@@ -13,13 +13,13 @@ import java.util.List;
 @Repository
 @EnableCaching
 public interface TicketRepository extends CrudRepository<Ticket, Long> {
-    @Cacheable(cacheNames = "budgets")
+    @Cacheable(cacheNames = "tickets")
     List<Ticket> findAllByUser(User user);
 
-    @Cacheable(cacheNames = "budgets")
+    @Cacheable(cacheNames = "tickets")
     List<Ticket> findAll();
 
-    @CacheEvict(cacheNames = "budgets", allEntries = true, beforeInvocation = true)
+    @CacheEvict(cacheNames = "tickets", allEntries = true, beforeInvocation = true)
     @Override
     <S extends Ticket> S save(S entity);
 }

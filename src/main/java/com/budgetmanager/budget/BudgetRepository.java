@@ -1,7 +1,6 @@
 package com.budgetmanager.budget;
 
 import com.budgetmanager.budget.entities.Budget;
-import com.budgetmanager.budget.entities.BudgetType;
 import com.budgetmanager.budget.entities.ExpenseCategory;
 import com.budgetmanager.budget.entities.IncomeCategory;
 import org.springframework.cache.annotation.CacheEvict;
@@ -16,10 +15,6 @@ import java.util.Optional;
 @Repository
 @EnableCaching
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
-    @Cacheable(cacheNames = "budgets")
-    List<Budget> findAllByUserIdAndBudgetType(Long id,
-                                              BudgetType budgetType);
-
     @Cacheable(cacheNames = "budgets")
     List<Budget> findAllByUserId(Long id);
 

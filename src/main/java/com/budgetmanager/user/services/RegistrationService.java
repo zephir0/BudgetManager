@@ -19,16 +19,11 @@ public class RegistrationService {
     }
 
     public void registerUser(UserRegisterDto userRegisterDto) {
-        if (checkIfUserExist(userRegisterDto.getLogin()))
+        boolean userLoginExists = userRepository.existsByLogin(userRegisterDto.getLogin());
+        if (userLoginExists)
             throw new UserAlreadyExistException("User with that login already exist in database");
         else {
             userRepository.save(UserRegistrationMapper.map(userRegisterDto, passwordEncoder));
         }
     }
-
-    public boolean checkIfUserExist(String login) {
-        return userRepository.existsByLogin(login);
-    }
-
-
 }

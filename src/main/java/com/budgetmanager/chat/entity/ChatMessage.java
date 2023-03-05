@@ -3,6 +3,8 @@ package com.budgetmanager.chat.entity;
 import com.budgetmanager.ticket.entity.Ticket;
 import com.budgetmanager.user.entities.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
@@ -14,11 +16,11 @@ public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id")
     @JsonBackReference
     private Ticket ticket;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
