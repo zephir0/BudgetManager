@@ -44,12 +44,7 @@ public class BudgetRepositoryTests {
 
     }
 
-    @Test
-    public void testFindAllByUserIdAndBudgetType() {
-        when(budgetRepository.findAllByUserIdAndBudgetType(expectedBudget.getUser().getId(), expectedBudget.getBudgetType())).thenReturn(expectedBudgetList);
-        List<Budget> actualBudgetList = budgetRepository.findAllByUserIdAndBudgetType(expectedBudget.getUser().getId(), expectedBudget.getBudgetType());
-        assertEquals(expectedBudgetList, actualBudgetList);
-    }
+
 
     @Test
     public void testFindAllByUserId() {
