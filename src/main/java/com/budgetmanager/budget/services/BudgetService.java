@@ -2,14 +2,8 @@ package com.budgetmanager.budget.services;
 
 import com.budgetmanager.budget.BudgetRepository;
 import com.budgetmanager.budget.dtos.BudgetDto;
-import com.budgetmanager.budget.entities.Budget;
-import com.budgetmanager.budget.entities.BudgetType;
-import com.budgetmanager.budget.entities.ExpenseCategory;
-import com.budgetmanager.budget.entities.IncomeCategory;
-import com.budgetmanager.budget.exceptions.BudgetDoesntExistException;
-import com.budgetmanager.budget.exceptions.BudgetValueNullException;
-import com.budgetmanager.budget.exceptions.EmptyBudgetCategoryException;
-import com.budgetmanager.budget.exceptions.EmptyBudgetTypeException;
+import com.budgetmanager.budget.entities.*;
+import com.budgetmanager.budget.exceptions.*;
 import com.budgetmanager.budget.mapper.BudgetMapper;
 import com.budgetmanager.user.entities.UserRoles;
 import com.budgetmanager.user.exceptions.NotAuthorizedException;
@@ -19,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Service
@@ -33,37 +28,41 @@ public class BudgetService {
         this.userService = userService;
     }
 
-    public void addBudget(BudgetDto budgetdto) {
-        if (budgetdto.getExpenseCategory() == null && budgetdto.getIncomeCategory() == null) {
-            throw new EmptyBudgetCategoryException("You need to insert an income or expense category");
-        } else if (budgetdto.getValue() == 0) {
-            throw new BudgetValueNullException("You need to insert an income or expense category");
-        } else if (budgetdto.getBudgetType() == null) {
-            throw new EmptyBudgetTypeException("You need to insert a budget type");
-        } else {
-            Budget budget = BudgetMapper.map(budgetdto, userService.getLoggedUser());
-            budgetRepository.save(budget);
-        }
-
+    public void addBudget(BudgetDto budgetDto) {
+        if (budgetDto.getExpenseCategory() == null && budgetDto.getIncomeCategory() == null)
+            throw new InvalidBudgetCategoryException("Incorrect budget category value.");
+        if (budgetDto.getBudgetType() == null) throw new InvalidBudgetTypeException("Incorrect budget type");
+        if (budgetDto.getValue() == 0) throw new InvalidBudgetValueException("Budget value should be higher than 0");
+        budgetRepository.save(BudgetMapper.map(budgetDto, userService.getLoggedUser()));
     }
-
 
     public void changeBudget(Long id,
                              BudgetDto budgetDto) {
         performBudgetOperation(id, budget -> {
             budget.setValue(budgetDto.getValue());
-            if (budget.getBudgetType() == BudgetType.INCOME) {
+            budget.setBudgetType(budgetDto.getBudgetType());
+            if (budgetDto.getBudgetType().equals(BudgetType.INCOME)) {
                 budget.setIncomeCategory(budgetDto.getIncomeCategory());
-            } else if (budget.getBudgetType() == BudgetType.EXPENSE) {
+            } else {
                 budget.setExpenseCategory(budgetDto.getExpenseCategory());
             }
             budgetRepository.save(budget);
         });
     }
 
+    @Transactional
+    public void deleteAllBudgetsByUserId(Long id) {
+        List<Budget> budgets = budgetRepository.findAllByUserId(id);
+        if (budgets.isEmpty()) {
+            throw new BudgetsNotFoundException("There is no budgets");
+        } else
+            budgets.stream().filter(budget -> budget.getUser().equals(userService.getLoggedUser()) || budget.getUser().getRole().equals(UserRoles.ADMIN)).forEach(budgetRepository::delete);
+    }
+
     public void deleteByBudgetId(Long id) {
         performBudgetOperation(id, budgetRepository::delete);
     }
+
 
     public void performBudgetOperation(Long id,
                                        Consumer<Budget> operation) {
@@ -72,51 +71,28 @@ public class BudgetService {
                 operation.accept(budget);
             } else throw new NotAuthorizedException("You are not authorized to perform this operation on that budget");
         }, () -> {
-            throw new BudgetDoesntExistException("There is no budget with id " + id);
+            throw new BudgetNotFoundException("There is no budget with id " + id);
         });
     }
 
-    public List<Budget> showAllBudget() {
+    public List<Budget> findAllBudgetsForLoggedUser() {
         return new ArrayList<>(budgetRepository.findAllByUserId(userService.getLoggedUser().getId()));
     }
 
-    @Transactional
-    public void deleteAllBudgetsByUserId(Long id) {
-        budgetRepository.deleteAllByUserId(id);
-    }
 
-
-    public List<Budget> findAllBudgetsByExpenseCategory(ExpenseCategory expenseCategory) {
-        return budgetRepository.findAllByExpenseCategoryAndUserId(expenseCategory, userService.getLoggedUser().getId());
-    }
-
-    public List<Budget> findAllBudgetsByIncomeCategory(IncomeCategory incomeCategory) {
-        return budgetRepository.findAllByIncomeCategoryAndUserId(incomeCategory, userService.getLoggedUser().getId());
-    }
-
-
-    public int countAllBudgetValue() {
-        int expenses = 0;
-        int incomes = 0;
-        for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.INCOME)) {
-            incomes += budget.getValue();
+    public List<Budget> findAllBudgetsByCategoryForUser(Category category) {
+        Objects.requireNonNull(category, "Category cannot be null");
+        if (category instanceof ExpenseCategory) {
+            return budgetRepository.findAllByExpenseCategoryAndUserId((ExpenseCategory) category, userService.getLoggedUser().getId());
+        } else if (category instanceof IncomeCategory) {
+            return budgetRepository.findAllByIncomeCategoryAndUserId((IncomeCategory) category, userService.getLoggedUser().getId());
+        } else {
+            throw new IllegalArgumentException("Invalid category type");
         }
-        for (Budget budget : allBudgetListForUserIdAndBudgetType(BudgetType.EXPENSE)) {
-            expenses -= budget.getValue();
-        }
-        return incomes - expenses;
     }
 
 
-    public Iterable<Budget> allBudgetListForUserIdAndBudgetType(BudgetType budgetType) {
-        return budgetRepository.findAllByUserIdAndBudgetType(userService.getLoggedUser().getId(), budgetType);
-    }
-
-    public List<Budget> showAllBudgetByUserId(Long id) {
-        return new ArrayList<>(budgetRepository.findAllByUserId(id));
-    }
-
-    public List<Budget> showBudgetByHistoryDayNumberAndUserId(String day,
+    public List<Budget> findBudgetByHistoryDayNumberAndUserId(String day,
                                                               Long id) {
         return budgetRepository.findAllByHistoryDayNumberAndUserId(day, id);
     }

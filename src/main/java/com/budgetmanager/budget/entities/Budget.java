@@ -31,7 +31,7 @@ public class Budget {
     @Column(name = "history_day_number")
     private String historyDayNumber;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
@@ -64,20 +64,20 @@ public class Budget {
         return user;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public void setUser(User user) {
         this.user = user;
     }
 
-    public Long getId() {
-        return id;
+    public int getValue() {
+        return value;
     }
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {

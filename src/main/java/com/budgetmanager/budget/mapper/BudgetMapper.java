@@ -3,7 +3,6 @@ package com.budgetmanager.budget.mapper;
 import com.budgetmanager.budget.dtos.BudgetDto;
 import com.budgetmanager.budget.entities.Budget;
 import com.budgetmanager.budget.entities.BudgetType;
-import com.budgetmanager.budget.exceptions.EmptyBudgetCategoryException;
 import com.budgetmanager.user.entities.User;
 
 import java.time.LocalDate;

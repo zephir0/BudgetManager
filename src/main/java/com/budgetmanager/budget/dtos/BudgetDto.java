@@ -3,6 +3,8 @@ package com.budgetmanager.budget.dtos;
 import com.budgetmanager.budget.entities.BudgetType;
 import com.budgetmanager.budget.entities.ExpenseCategory;
 import com.budgetmanager.budget.entities.IncomeCategory;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BudgetDto {
     private final int value;
@@ -10,10 +12,12 @@ public class BudgetDto {
     private final ExpenseCategory expenseCategory;
     private final IncomeCategory incomeCategory;
 
-    public BudgetDto(int value,
-                     BudgetType budgetType,
-                     ExpenseCategory expenseCategory,
-                     IncomeCategory incomeCategory) {
+
+    @JsonCreator
+    public BudgetDto(@JsonProperty("value") int value,
+                     @JsonProperty("budgetType") BudgetType budgetType,
+                     @JsonProperty("expenseCategory") ExpenseCategory expenseCategory,
+                     @JsonProperty("incomeCategory") IncomeCategory incomeCategory) {
         this.value = value;
         this.budgetType = budgetType;
         this.expenseCategory = expenseCategory;

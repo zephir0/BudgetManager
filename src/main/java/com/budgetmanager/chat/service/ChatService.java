@@ -4,9 +4,11 @@ import com.budgetmanager.chat.ChatRepository;
 import com.budgetmanager.chat.dto.ChatMessageDto;
 import com.budgetmanager.chat.entity.ChatMessage;
 import com.budgetmanager.chat.exception.MessageDoesntExistException;
+import com.budgetmanager.chat.exception.MessageEmptyException;
 import com.budgetmanager.chat.mapper.ChatMessageMapper;
 import com.budgetmanager.ticket.TicketRepository;
 import com.budgetmanager.ticket.exceptions.TicketDoesntExistException;
+import com.budgetmanager.user.entities.User;
 import com.budgetmanager.user.entities.UserRoles;
 import com.budgetmanager.user.exceptions.NotAuthorizedException;
 import com.budgetmanager.user.services.UserService;
@@ -21,6 +23,7 @@ public class ChatService {
     private final TicketRepository ticketRepository;
     private final UserService userService;
 
+
     public ChatService(ChatRepository chatRepository,
                        TicketRepository ticketRepository,
                        UserService userService) {
@@ -29,14 +32,19 @@ public class ChatService {
         this.userService = userService;
     }
 
+
     public void addMessage(Long ticketId,
                            ChatMessageDto chatMessageDto) {
-        ChatMessage chatMessage = ChatMessageMapper
-                .map(ticketRepository.findById(ticketId)
-                        .orElseThrow(
-                                () -> new TicketDoesntExistException("Ticket doesn't exist")), chatMessageDto, userService.getLoggedUser()
-                );
-        chatRepository.save(chatMessage);
+        ticketRepository.findById(ticketId).ifPresentOrElse(ticket -> {
+            if (chatMessageDto.getMessage().isEmpty()) {
+                throw new MessageEmptyException("Message cannot be empty");
+            } else {
+                ChatMessage chatMessage = ChatMessageMapper.map(ticket, chatMessageDto, userService.getLoggedUser());
+                chatRepository.save(chatMessage);
+            }
+        }, () -> {
+            throw new TicketDoesntExistException("Ticket doesn't exist");
+        });
     }
 
     @Transactional
@@ -48,17 +56,27 @@ public class ChatService {
     }
 
     public List<ChatMessage> messageList(Long ticketId) {
+        User loggedUser = userService.getLoggedUser();
+
         return ticketRepository.findById(ticketId).map(ticket -> {
-            if (ticket.getUser().equals(userService.getLoggedUser()) || userService.getLoggedUser().getRole().equals(UserRoles.ADMIN)) {
+            if (ticket.getUser().equals(loggedUser) || loggedUser.getRole().equals(UserRoles.ADMIN)) {
                 return chatRepository.findAllByTicketId(ticketId);
-            } else
-                throw new NotAuthorizedException("You are not authorized to see that ticket messages");
+            } else throw new NotAuthorizedException("You are not authorized to see that ticket messages");
         }).orElseThrow(() -> new TicketDoesntExistException("Ticket doesn't exist"));
     }
 
     @Transactional
     public void deleteMessage(Long messageId) {
-        ChatMessage message = chatRepository.findById(messageId).orElseThrow(() -> new MessageDoesntExistException("Message doesn't exist"));
-        chatRepository.delete(message);
+        User loggedUser = userService.getLoggedUser();
+        chatRepository.findById(messageId)
+                .filter(chatMessage ->
+                        loggedUser.equals(chatMessage.getUser()) || loggedUser.getRole().equals(UserRoles.ADMIN))
+                .ifPresentOrElse(
+                        chatRepository::delete, () -> {
+                            throw new MessageDoesntExistException("Message doesn't exist");
+                        });
     }
+
+
 }
+

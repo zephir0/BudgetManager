@@ -1,11 +1,11 @@
-package com.budgetmanager.Budget;
+package com.budgetmanager.Budget.services;
 
 import com.budgetmanager.budget.BudgetRepository;
 import com.budgetmanager.budget.dtos.BudgetDto;
 import com.budgetmanager.budget.entities.Budget;
 import com.budgetmanager.budget.entities.BudgetType;
 import com.budgetmanager.budget.entities.ExpenseCategory;
-import com.budgetmanager.budget.exceptions.BudgetDoesntExistException;
+import com.budgetmanager.budget.exceptions.BudgetNotFoundException;
 import com.budgetmanager.budget.services.BudgetService;
 import com.budgetmanager.user.entities.User;
 import com.budgetmanager.user.entities.UserRoles;
@@ -18,11 +18,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BudgetServiceChangeAndDeleteTests {
@@ -70,16 +71,34 @@ public class BudgetServiceChangeAndDeleteTests {
     }
 
     @Test
-    public void testDeleteBudget() {
+    public void testDeleteBudgetById() {
         when(userService.getLoggedUser()).thenReturn(testUser);
         when(budgetRepository.findById(testBudget.getId())).thenReturn(Optional.of(testBudget));
+
         budgetService.deleteByBudgetId(testBudget.getId());
+
         verify(budgetRepository).findById(testBudget.getId());
         verify(budgetRepository).delete(testBudget);
+
         when(budgetRepository.findById(testBudget.getId())).thenReturn(Optional.empty());
         assertFalse((budgetRepository).findById(testBudget.getId()).isPresent());
     }
 
+
+    @Test
+    public void testDeleteAllBudgetsByUserId() {
+        List<Budget> budgetList = List.of(testBudget, testBudget);
+        when(userService.getLoggedUser()).thenReturn(testUser);
+        when(budgetRepository.findAllByUserId(testBudget.getId())).thenReturn(budgetList);
+
+
+        budgetService.deleteAllBudgetsByUserId(testBudget.getId());
+
+        verify(budgetRepository).findAllByUserId(testBudget.getId());
+        verify(budgetRepository, times(2)).delete(testBudget);
+        when(budgetRepository.findAllByUserId(userService.getLoggedUser().getId())).thenReturn(Collections.emptyList());
+        assertTrue(budgetRepository.findAllByUserId(userService.getLoggedUser().getId()).isEmpty());
+    }
 
     @Test
     public void shouldThrowNotAuthorizedException() {
@@ -98,8 +117,8 @@ public class BudgetServiceChangeAndDeleteTests {
     @Test
     public void shouldThrowBudgetDoesntExistException() {
         when(budgetRepository.findById(testBudget.getId())).thenReturn(Optional.empty());
-        assertThrows(BudgetDoesntExistException.class, () -> budgetService.performBudgetOperation(testBudget.getId(), budgetRepository::delete));
-        assertThrows(BudgetDoesntExistException.class, () -> budgetService.performBudgetOperation(testBudget.getId(), budgetToUpdate -> {
+        assertThrows(BudgetNotFoundException.class, () -> budgetService.performBudgetOperation(testBudget.getId(), budgetRepository::delete));
+        assertThrows(BudgetNotFoundException.class, () -> budgetService.performBudgetOperation(testBudget.getId(), budgetToUpdate -> {
             budgetToUpdate.setValue(500);
             budgetToUpdate.setBudgetType(BudgetType.INCOME);
         }));

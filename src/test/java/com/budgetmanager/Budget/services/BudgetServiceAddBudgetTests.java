@@ -1,13 +1,13 @@
-package com.budgetmanager.Budget;
+package com.budgetmanager.Budget.services;
 
 import com.budgetmanager.budget.BudgetRepository;
 import com.budgetmanager.budget.dtos.BudgetDto;
 import com.budgetmanager.budget.entities.Budget;
 import com.budgetmanager.budget.entities.BudgetType;
 import com.budgetmanager.budget.entities.ExpenseCategory;
-import com.budgetmanager.budget.exceptions.BudgetValueNullException;
-import com.budgetmanager.budget.exceptions.EmptyBudgetCategoryException;
-import com.budgetmanager.budget.exceptions.EmptyBudgetTypeException;
+import com.budgetmanager.budget.exceptions.InvalidBudgetValueException;
+import com.budgetmanager.budget.exceptions.InvalidBudgetCategoryException;
+import com.budgetmanager.budget.exceptions.InvalidBudgetTypeException;
 import com.budgetmanager.budget.services.BudgetService;
 import com.budgetmanager.user.entities.User;
 import com.budgetmanager.user.entities.UserRoles;
@@ -77,19 +77,19 @@ public class BudgetServiceAddBudgetTests {
     @Test
     void shouldThrowEmptyBudgetCategoryException() {
         testBudgetDto = new BudgetDto(1000, BudgetType.EXPENSE, null, null);
-        assertThrows(EmptyBudgetCategoryException.class, () -> budgetService.addBudget(testBudgetDto));
+        assertThrows(InvalidBudgetCategoryException.class, () -> budgetService.addBudget(testBudgetDto));
     }
 
     @Test
     void shouldThrowBudgetValueNullException() {
         testBudgetDto = new BudgetDto(0, BudgetType.EXPENSE, ExpenseCategory.FOOD, null);
-        assertThrows(BudgetValueNullException.class, () -> budgetService.addBudget(testBudgetDto));
+        assertThrows(InvalidBudgetValueException.class, () -> budgetService.addBudget(testBudgetDto));
     }
 
     @Test
     void shouldThrowEmptyBudgetTypeException() {
         testBudgetDto = new BudgetDto(100, null, ExpenseCategory.FOOD, null);
-        assertThrows(EmptyBudgetTypeException.class, () -> budgetService.addBudget(testBudgetDto));
+        assertThrows(InvalidBudgetTypeException.class, () -> budgetService.addBudget(testBudgetDto));
     }
 
 }

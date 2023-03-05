@@ -1,8 +1,7 @@
 package com.budgetmanager.budget.controllers;
 
 import com.budgetmanager.budget.dtos.CalcDto;
-import com.budgetmanager.budget.services.CalcService;
-
+import com.budgetmanager.budget.services.CalculatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -15,13 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/calc")
+@RequestMapping("/api/calculate")
 @Tag(name = "Calculator", description = "Endpoints for calculating budgets")
-public class CalcController {
-    private final CalcService calcService;
+public class CalculatorController {
+    private final CalculatorService calculatorService;
 
-    public CalcController(CalcService calcService) {
-        this.calcService = calcService;
+    public CalculatorController(CalculatorService calculatorService) {
+        this.calculatorService = calculatorService;
     }
 
     @PostMapping("/yearlybudget")
@@ -35,6 +34,18 @@ public class CalcController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<String> calculateYearlyBudget(@RequestBody CalcDto calcDto) {
-        return new ResponseEntity<>(calcService.yearlyBudget(calcDto), HttpStatus.OK);
+        return new ResponseEntity<>(calculatorService.yearlyBudget(calcDto), HttpStatus.OK);
     }
+
+    @GetMapping("/count/total")
+    @Operation(summary = "Count total budget value", description = "Returns the total value of all budgets for the logged in user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Total budget value"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public int countBudgetBalance() {
+        return calculatorService.countBudgetBalance();
+    }
+
 }

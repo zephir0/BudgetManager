@@ -4,9 +4,6 @@ import com.budgetmanager.chat.dto.ChatMessageDto;
 import com.budgetmanager.chat.entity.ChatMessage;
 import com.budgetmanager.chat.exception.MessageDoesntExistException;
 import com.budgetmanager.chat.service.ChatService;
-import com.budgetmanager.ticket.exceptions.TicketDoesntExistException;
-import com.budgetmanager.user.exceptions.NotAuthorizedException;
-import com.budgetmanager.user.exceptions.UserNotLoggedInException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -43,7 +40,7 @@ public class ChatController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<String> sendMessage(@PathVariable("ticketId") Long ticketId,
-                                              @RequestBody ChatMessageDto messageDto) throws UserNotLoggedInException, TicketDoesntExistException {
+                                              @RequestBody ChatMessageDto messageDto) {
         chatService.addMessage(ticketId, messageDto);
         return new ResponseEntity<>("Message sent", HttpStatus.CREATED);
     }
@@ -59,7 +56,7 @@ public class ChatController {
             @ApiResponse(responseCode = "404", description = "Ticket not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<ChatMessage>> getMessagesByTicketId(@PathVariable("ticketId") Long ticketId) throws NotAuthorizedException, TicketDoesntExistException {
+    public ResponseEntity<List<ChatMessage>> getMessagesByTicketId(@PathVariable("ticketId") Long ticketId) {
         return ResponseEntity.ok(chatService.messageList(ticketId));
     }
 
@@ -70,6 +67,7 @@ public class ChatController {
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Message deleted"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Message not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })

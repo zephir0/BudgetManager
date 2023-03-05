@@ -1,12 +1,8 @@
 package com.budgetmanager.ticket.controller;
 
-import com.budgetmanager.ticket.service.TicketService;
 import com.budgetmanager.ticket.dto.TicketDto;
 import com.budgetmanager.ticket.entity.Ticket;
-import com.budgetmanager.ticket.exceptions.TicketDoesntExistException;
-import com.budgetmanager.user.exceptions.NotAuthorizedException;
-import com.budgetmanager.user.exceptions.UserNotLoggedInException;
-
+import com.budgetmanager.ticket.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -14,7 +10,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +33,10 @@ public class TicketController {
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ticket created"),
+            @ApiResponse(responseCode = "401", description = "Not logged in"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<String> createTicket(@RequestBody TicketDto ticketDto) throws UserNotLoggedInException {
+    public ResponseEntity<String> createTicket(@RequestBody TicketDto ticketDto) {
         ticketService.createTicket(ticketDto);
 
         return new ResponseEntity<>("Ticket has been created", HttpStatus.CREATED);
@@ -56,7 +52,7 @@ public class TicketController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Ticket>> showAllTickets() throws NotAuthorizedException {
+    public ResponseEntity<List<Ticket>> showAllTickets() {
         return ResponseEntity.ok(ticketService.showAllTickets());
     }
 
@@ -71,7 +67,7 @@ public class TicketController {
             @ApiResponse(responseCode = "404", description = "Ticket not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") long ticketId) throws UserNotLoggedInException, NotAuthorizedException, TicketDoesntExistException {
+    public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") long ticketId) {
         ticketService.deleteTicket(ticketId);
         return new ResponseEntity<>("Ticket has been deleted", HttpStatus.OK);
     }

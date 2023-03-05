@@ -1,4 +1,4 @@
-package com.budgetmanager.Budget;
+package com.budgetmanager.Budget.repository;
 
 import com.budgetmanager.budget.BudgetRepository;
 import com.budgetmanager.budget.entities.Budget;

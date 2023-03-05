@@ -1,6 +1,6 @@
 package com.budgetmanager.budget.entities;
 
-public enum ExpenseCategory {
+public enum ExpenseCategory implements Category {
     FOOD,
     TRANSPORT,
     HOUSING,
@@ -11,4 +11,6 @@ public enum ExpenseCategory {
     INSURANCE,
     TAXES,
     OTHERS;
+
+
 }
