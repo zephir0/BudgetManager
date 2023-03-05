@@ -19,11 +19,14 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     List<Budget> findAllByUserId(Long id);
 
     @Override
+    @Cacheable(cacheNames = "budgets")
     Optional<Budget> findById(Long id);
 
+    @Cacheable(cacheNames = "budgets")
     List<Budget> findAllByExpenseCategoryAndUserId(ExpenseCategory expenseCategory,
                                                    Long id);
 
+    @Cacheable(cacheNames = "budgets")
     List<Budget> findAllByIncomeCategoryAndUserId(IncomeCategory incomeCategory,
                                                   Long id);
 

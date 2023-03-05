@@ -79,4 +79,8 @@ public class AuthorizationController {
             return new ResponseEntity<>("User logged out.", HttpStatus.OK);
         }
     }
+
 }
+
+}
+
