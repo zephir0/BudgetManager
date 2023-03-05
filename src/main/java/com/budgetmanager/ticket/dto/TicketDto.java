@@ -1,16 +1,15 @@
 package com.budgetmanager.ticket.dto;
 
-import com.budgetmanager.ticket.entity.Ticket;
-import com.budgetmanager.user.entities.User;
-
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TicketDto {
     private final String subject;
     private final String message;
 
-    public TicketDto(String subject,
-                     String message) {
+    @JsonCreator
+    public TicketDto(@JsonProperty("subject") String subject,
+                     @JsonProperty("message") String message) {
         this.subject = subject;
         this.message = message;
     }

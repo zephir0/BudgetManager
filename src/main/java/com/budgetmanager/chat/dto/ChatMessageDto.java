@@ -1,9 +1,7 @@
 package com.budgetmanager.chat.dto;
 
-import com.budgetmanager.chat.entity.ChatMessage;
-import com.budgetmanager.ticket.entity.Ticket;
-import com.budgetmanager.user.entities.User;
-import com.budgetmanager.user.entities.UserRoles;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -12,9 +10,10 @@ public class ChatMessageDto {
     private final LocalDateTime createdAt;
     private final boolean isAdmin;
 
-    public ChatMessageDto(String message,
-                          LocalDateTime createdAt,
-                          boolean isAdmin) {
+    @JsonCreator
+    public ChatMessageDto(@JsonProperty("message") String message,
+                          @JsonProperty("createdAt") LocalDateTime createdAt,
+                          @JsonProperty("isAdmin") boolean isAdmin) {
         this.message = message;
         this.createdAt = createdAt;
         this.isAdmin = isAdmin;

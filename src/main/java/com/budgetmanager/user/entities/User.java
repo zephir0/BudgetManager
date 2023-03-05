@@ -53,6 +53,10 @@ public class User {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Collection<Ticket> getTickets() {
         return tickets;
     }
@@ -67,10 +71,6 @@ public class User {
 
     public void setMessages(Set<ChatMessage> messages) {
         this.messages = messages;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getLogin() {

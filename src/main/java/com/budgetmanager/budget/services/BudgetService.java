@@ -59,6 +59,7 @@ public class BudgetService {
             budgets.stream().filter(budget -> budget.getUser().equals(userService.getLoggedUser()) || budget.getUser().getRole().equals(UserRoles.ADMIN)).forEach(budgetRepository::delete);
     }
 
+    @Transactional
     public void deleteByBudgetId(Long id) {
         performBudgetOperation(id, budgetRepository::delete);
     }
